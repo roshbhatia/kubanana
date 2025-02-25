@@ -1,0 +1,41 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: resource-kind-match
+spec:
+  steps:
+  - name: create-resource-kind-job-template
+    try:
+    - apply:
+        file: ../resources/resource-kind-job-template.yaml
+    - assert:
+        file: ../resources/resource-kind-job-template.yaml
+  
+  - name: create-matching-pod
+    try:
+    - apply:
+        file: ../resources/test-pod.yaml
+    - assert:
+        file: ../resources/test-pod.yaml
+    
+  - name: verify-job-creation-for-pod
+    try:
+    - assert:
+        file: ../verifications/pod-job-created.yaml
+  
+  - name: create-configmap-should-not-trigger
+    try:
+    - apply:
+        file: ../resources/test-configmap.yaml
+    - assert:
+        file: ../resources/test-configmap.yaml
+    
+  - name: wait-for-potential-job
+    try:
+    - sleep:
+        duration: 5s
+  
+  - name: verify-no-configmap-job-created
+    try:
+    - assert:
+        file: ../verifications/no-configmap-job.yaml

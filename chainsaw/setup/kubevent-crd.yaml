@@ -1,0 +1,70 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: EventTriggeredJob.kubevent.roshanbhatia.com
+spec:
+  group: kubevent.roshanbhatia.com
+  names:
+    kind: EventTriggeredJob
+    listKind: EventTriggeredJobList
+    plural: EventTriggeredJob
+    singular: EventTriggeredJob
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              eventSelector:
+                properties:
+                  resourceKind:
+                    type: string
+                  namePattern:
+                    type: string
+                  namespacePattern:
+                    type: string
+                  labelSelector:
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+                  eventTypes:
+                    items:
+                      type: string
+                    type: array
+                required:
+                - resourceKind
+                - eventTypes
+                type: object
+              jobTemplate:
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+            required:
+            - eventSelector
+            - jobTemplate
+            type: object
+          status:
+            properties:
+              jobsCreated:
+                type: integer
+                format: int64
+              lastTriggeredTime:
+                type: string
+                format: date-time
+              conditions:
+                items:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

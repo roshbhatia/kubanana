@@ -1,0 +1,24 @@
+apiVersion: kubevent.roshanbhatia.com/v1alpha1
+kind: EventTriggeredJob
+metadata:
+  name: owner-reference-template
+  namespace: default
+spec:
+  eventSelector:
+    resourceKind: "Pod"
+    namePattern: "test-pod-for-owner"
+    namespacePattern: "default"
+    eventTypes: ["CREATE"]
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            test-type: owner-reference
+            kubevent-template: "owner-reference-template"
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            command: ["sh", "-c", "echo 'Testing owner references'; sleep 5"]
+          restartPolicy: Never

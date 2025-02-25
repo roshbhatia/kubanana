@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: default
+  labels:
+    kubevent-resource-kind: Pod
+    kubevent-template: recovery-job-template
+  ownerReferences:
+  - apiVersion: kubevent.roshanbhatia.com/v1alpha1
+    kind: EventTriggeredJob
+    name: recovery-job-template
+spec:
+  template:
+    metadata:
+      labels:
+        test-type: recovery
+    spec:
+      containers:
+      - name: hello
+        image: busybox
+        command:
+        - sh
+        - -c
+        - echo 'Recovery test successful!'; sleep 5
+        env:
+        - name: RESOURCE_KIND
+          value: Pod
+        - name: RESOURCE_NAME
+          value: recovery-test-pod
+        - name: RESOURCE_NAMESPACE
+          value: default
+        - name: EVENT_TYPE
+          value: CREATE
+      restartPolicy: Never

@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: default
+  labels:
+    kubevent-resource-kind: Pod
+    kubevent-event-type: DELETE
+    kubevent-template: test-job-template
+  ownerReferences:
+  - apiVersion: kubevent.roshanbhatia.com/v1alpha1
+    kind: EventTriggeredJob
+    name: test-job-template
+spec:
+  template:
+    spec:
+      containers:
+      - name: hello
+        image: busybox
+        command:
+        - echo
+        - "Hello from Kubevent!"
+        env:
+        - name: RESOURCE_KIND
+          value: Pod
+        - name: RESOURCE_NAME
+          value: test-pod
+        - name: RESOURCE_NAMESPACE
+          value: default
+        - name: EVENT_TYPE
+          value: DELETE
+      restartPolicy: Never

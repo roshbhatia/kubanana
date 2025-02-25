@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: default
+  labels:
+    kubevent-resource-kind: Pod
+    kubevent-template: name-pattern-test
+  ownerReferences:
+  - apiVersion: kubevent.roshanbhatia.com/v1alpha1
+    kind: EventTriggeredJob
+    name: name-pattern-test
+spec:
+  template:
+    metadata:
+      labels:
+        test-type: name-pattern
+        pattern-match: "true"
+    spec:
+      containers:
+      - name: hello
+        image: busybox
+        command:
+        - sh
+        - -c
+        - echo 'Pattern match found!'; sleep 5
+        env:
+        - name: RESOURCE_KIND
+          value: Pod
+        - name: RESOURCE_NAME
+        - name: RESOURCE_NAMESPACE
+          value: default
+        - name: EVENT_TYPE
+          value: CREATE
+      restartPolicy: Never

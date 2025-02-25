@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: default
+  labels:
+    kubevent-resource-kind: Pod
+    kubevent-template: label-selector-job-template
+  ownerReferences:
+  - apiVersion: kubevent.roshanbhatia.com/v1alpha1
+    kind: EventTriggeredJob
+    name: label-selector-job-template
+spec:
+  template:
+    spec:
+      containers:
+      - name: echo
+        image: busybox
+        command:
+        - sh
+        - -c
+        - echo 'Matching pod event detected!'; sleep 5
+        env:
+        - name: RESOURCE_KIND
+          value: Pod
+        - name: RESOURCE_NAME
+        - name: RESOURCE_NAMESPACE
+          value: default
+        - name: EVENT_TYPE
+          value: CREATE
+      restartPolicy: Never

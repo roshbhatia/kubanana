@@ -1,0 +1,10 @@
+apiVersion: batch/v1
+kind: JobList
+metadata:
+  namespace: default
+items: []
+selector:
+  matchExpressions:
+  - key: job-name
+    operator: Contains
+    value: non-matching-pod

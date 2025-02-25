@@ -1,0 +1,24 @@
+apiVersion: kubevent.roshanbhatia.com/v1alpha1
+kind: EventTriggeredJob
+metadata:
+  name: name-pattern-test
+  namespace: default
+spec:
+  eventSelector:
+    resourceKind: "Pod"
+    namePattern: "pattern-match-*"
+    namespacePattern: "default"
+    eventTypes: ["CREATE"]
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            test-type: name-pattern
+            pattern-match: "true"
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            command: ["sh", "-c", "echo 'Name pattern matched!'; sleep 5"]
+          restartPolicy: Never

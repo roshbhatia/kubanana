@@ -1,0 +1,10 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: event-based-job-template
+spec:
+  steps:
+  - name: create-event-based-job-template
+    try:
+    - apply:
+        file: ../resources/event-based-job-template.yaml

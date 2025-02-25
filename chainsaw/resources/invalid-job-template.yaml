@@ -1,0 +1,20 @@
+apiVersion: kubevent.roshanbhatia.com/v1alpha1
+kind: EventTriggeredJob
+metadata:
+  name: invalid-job-template
+  namespace: default
+spec:
+  eventSelector:
+    resourceKind: "Pod"
+    namePattern: "test-pod"
+    namespacePattern: "default"
+    eventTypes: ["CREATE"]
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: invalid-container
+            image: non-existent-image:latest
+            command: ["invalid-command"]
+          restartPolicy: Invalid

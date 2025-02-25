@@ -1,0 +1,41 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: name-pattern-match
+spec:
+  steps:
+  - name: create-name-pattern-job-template
+    try:
+    - apply:
+        file: ../resources/name-pattern-job-template.yaml
+    - assert:
+        file: ../resources/name-pattern-job-template.yaml
+  
+  - name: create-matching-pod
+    try:
+    - apply:
+        file: ../resources/pattern-match-pod.yaml
+    - assert:
+        file: ../resources/pattern-match-pod.yaml
+    
+  - name: verify-job-creation-for-matching-pod
+    try:
+    - assert:
+        file: ../verifications/name-pattern-job-created.yaml
+  
+  - name: create-non-matching-pod
+    try:
+    - apply:
+        file: ../resources/pattern-non-match-pod.yaml
+    - assert:
+        file: ../resources/pattern-non-match-pod.yaml
+    
+  - name: wait-for-potential-job
+    try:
+    - sleep:
+        duration: 5s
+  
+  - name: verify-no-job-for-non-matching-pod
+    try:
+    - assert:
+        file: ../verifications/no-job-for-non-matching-pod.yaml

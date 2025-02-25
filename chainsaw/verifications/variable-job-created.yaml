@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: default
+  labels:
+    kubevent-resource-kind: Pod
+    kubevent-resource-name: test-pod-for-variables
+    kubevent-template: variable-test
+  ownerReferences:
+  - apiVersion: kubevent.roshanbhatia.com/v1alpha1
+    kind: EventTriggeredJob
+    name: variable-test
+spec:
+  template:
+    metadata:
+      labels:
+        test-type: variable
+        kubevent-resource-name: test-pod-for-variables
+    spec:
+      containers:
+      - name: hello
+        image: busybox
+        command:
+        - sh
+        - -c
+        - echo 'Resource: $RESOURCE_KIND, Name: $RESOURCE_NAME'; sleep 10
+        env:
+        - name: RESOURCE_KIND
+          value: Pod
+        - name: RESOURCE_NAME
+          value: test-pod-for-variables
+        - name: RESOURCE_NAMESPACE
+          value: default
+        - name: EVENT_TYPE
+          value: CREATE
+      restartPolicy: Never

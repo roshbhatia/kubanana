@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: prod-test-pod
+  namespace: prod-us-east1
+  labels:
+    app: "web-server"
+    environment: "production"
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+  restartPolicy: Never

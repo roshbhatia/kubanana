@@ -1,0 +1,33 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: event-based-job-template-test
+spec:
+  # Step 1: Apply the EventTriggeredJob
+  - apply:
+      file: ../resources/event-based-job-template.yaml
+  
+  # Step 2: Create a pod to trigger event
+  - apply:
+      file: ../resources/test-pod.yaml
+  
+  # Step 3: Check if pod was created
+  - script:
+      content: |
+        #!/bin/bash
+        echo "Checking if pod was created"
+        kubectl get pod test-pod -n default
+  
+  # Step 4: Delete the pod to trigger a second event
+  - delete:
+      apiVersion: v1
+      kind: Pod
+      name: test-pod
+      namespace: default
+  
+  # Step 5: Final cleanup
+  - script:
+      content: |
+        #!/bin/bash
+        echo "Test finished"
+        kubectl get pods -n default

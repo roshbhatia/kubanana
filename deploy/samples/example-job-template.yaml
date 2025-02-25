@@ -1,0 +1,22 @@
+apiVersion: kubevent.roshanbhatia.com/v1alpha1
+kind: EventTriggeredJob
+metadata:
+  name: pod-restart-notification
+spec:
+  eventSelector:
+    resourceKind: "Pod"
+    namePattern: "*"
+    namespacePattern: "default"
+    labelSelector:
+      matchLabels:
+        app: myapp
+    eventTypes: ["DELETE"]
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: notification
+            image: busybox
+            command: ["sh", "-c", "echo 'Pod was restarted!' && sleep 5"]
+          restartPolicy: Never

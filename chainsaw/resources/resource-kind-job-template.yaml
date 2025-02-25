@@ -1,0 +1,23 @@
+apiVersion: kubevent.roshanbhatia.com/v1alpha1
+kind: EventTriggeredJob
+metadata:
+  name: resource-kind-test
+  namespace: default
+spec:
+  eventSelector:
+    resourceKind: "Pod"
+    namePattern: "*"
+    namespacePattern: "default"
+    eventTypes: ["CREATE"]
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            test-type: resource-kind
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            command: ["sh", "-c", "echo 'Pod event detected!'; sleep 5"]
+          restartPolicy: Never

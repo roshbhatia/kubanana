@@ -1,0 +1,49 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: namespace-pattern-test
+spec:
+  steps:
+  - name: create-test-namespaces
+    try:
+    - apply:
+        file: ../resources/prod-namespace.yaml
+    - apply:
+        file: ../resources/staging-namespace.yaml
+    - apply:
+        file: ../resources/dev-namespace.yaml
+  
+  - name: create-event-based-job-template-with-namespace-pattern
+    try:
+    - apply:
+        file: ../resources/namespace-pattern-job-template.yaml
+    
+  - name: create-pod-in-matching-namespace
+    try:
+    - apply:
+        file: ../resources/prod-namespace-pod.yaml
+    
+  - name: verify-job-creation-for-matching-namespace
+    try:
+    - assert:
+        file: ../verifications/prod-namespace-job-created.yaml
+    
+  - name: create-pod-in-non-matching-namespace
+    try:
+    - apply:
+        file: ../resources/dev-namespace-pod.yaml
+    
+  - name: verify-no-job-for-non-matching-namespace
+    try:
+    - script:
+        content: |
+          #!/bin/bash
+          # Check that no job was created for the pod in non-matching namespace
+          JOBS=$(kubectl get jobs -n kubevent-system --no-headers | grep "dev-namespace" | wc -l)
+          if [ "$JOBS" -eq "0" ]; then
+            echo "No jobs were created for pod in non-matching namespace as expected"
+            exit 0
+          else
+            echo "Expected no jobs for dev namespace, but found $JOBS jobs"
+            exit 1
+          fi
