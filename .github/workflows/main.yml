@@ -18,8 +18,8 @@ jobs:
       with:
         go-version: '1.20'
         
-    - name: Set up Kind
-      uses: engineerd/setup-kind@v0.6.0
+    - name: Set up Kind 
+      uses: engineerd/setup-kind@v0.6.2
       with:
         version: "v0.24.0"
         
