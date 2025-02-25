@@ -16,12 +16,13 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.20'
+        go-version: '1.21'
         
     - name: Set up Kind 
-      uses: engineerd/setup-kind@v0.6.2
-      with:
-        version: "v0.24.0"
+      run: |
+        curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.26.0/kind-linux-arm64
+        chmod +x ./kind
+        sudo mv ./kind /usr/local/bin/kind
         
     - name: Install Chainsaw
       uses: kyverno/action-install-chainsaw@v0.1.0
