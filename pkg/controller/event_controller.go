@@ -116,7 +116,10 @@ func (c *EventController) Run(workers int, stopCh <-chan struct{}) error {
 }
 
 func (c *EventController) runWorker() {
-	for c.processNextItem() {
+	for c.workqueue.Len() > 0 {
+		if !c.processNextItem() {
+			return
+		}
 	}
 }
 
