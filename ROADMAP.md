@@ -6,3 +6,4 @@
 - [ ] Expose metrics and traces via OTEL
 - [ ] Have EventTriggeredJob create a meta block (inherit xyz from parent, like annotations, namespace, etc.)
 - [ ] Create a Prometheus EventProducer
+- [ ] Decouple event consumption from job dispatching
