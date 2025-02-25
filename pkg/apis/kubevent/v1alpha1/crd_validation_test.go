@@ -58,7 +58,7 @@ func TestCRDValidation(t *testing.T) {
 
 	// Read the CRD file
 	rootDir := findRootDir(t)
-	crdPath := filepath.Join(rootDir, "deploy", "crds", "kubevent.roshanbhatia.com_EventTriggeredJob.yaml")
+	crdPath := filepath.Join(rootDir, "deploy", "crds", "kubevent.roshanbhatia.com_eventtriggeredjobs.yaml")
 
 	if _, err := os.Stat(crdPath); os.IsNotExist(err) {
 		t.Skipf("CRD file not found at %s, skipping test", crdPath)
