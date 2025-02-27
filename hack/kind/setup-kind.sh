@@ -7,21 +7,10 @@ set -o pipefail
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 ROOT_DIR=$(cd "${SCRIPT_DIR}/../.." && pwd)
 
-if ! kind get clusters | grep -q kubevent; then
-  echo "Creating Kind cluster 'kubevent'..."
-  kind create cluster --config "${SCRIPT_DIR}/kind-config.yaml"
-else
-  echo "Kind cluster 'kubevent' already exists."
-fi
+# Call the clean-recreate-kind.sh script to create a clean cluster and load images
+${SCRIPT_DIR}/clean-recreate-kind.sh
 
-echo "Building Docker images..."
-make docker-build
-
-echo "Loading images into Kind..."
-kind load docker-image kubevent-controller:latest --name kubevent
-kind load docker-image busybox --name kubevent
-kind load docker-image nginx --name kubevent
-
+# Now manually install components
 echo "Installing CRD..."
 kubectl apply -f "${ROOT_DIR}/deploy/crds/kubevent.roshanbhatia.com_eventtriggeredjobs.yaml"
 

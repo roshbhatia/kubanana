@@ -1,0 +1,39 @@
+# Default values for kubevent.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Namespace configuration
+namespace:
+  # Name of the namespace
+  name: kubevent-system
+  # Whether to create the namespace (set to false if you're managing namespaces separately)
+  create: true
+
+# Deployment configuration
+deployment:
+  # Fixed at 1 replica for now
+  replicas: 1
+  image:
+    repository: kubevent-controller
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# ServiceAccount configuration
+serviceAccount:
+  # Name of the service account to use
+  name: kubevent-sa
+
+# RBAC configuration
+rbac:
+  # The name of the ClusterRole to create
+  name: kubevent-role
+
+# CRD installation (not required if you install CRDs separately)
+installCRDs: false

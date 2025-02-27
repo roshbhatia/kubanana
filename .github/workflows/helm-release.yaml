@@ -1,0 +1,41 @@
+name: Release Helm Chart
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '^1.21'
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.3
+
+      - name: Update Helm chart version
+        run: make helm-update
+
+      - name: Package Helm chart
+        run: |
+          mkdir -p charts/dist
+          make helm-package
+
+      - name: Setup chart-releaser
+        uses: helm/chart-releaser-action@v1.5.0
+        with:
+          charts_dir: charts
+          config: cr-config.yaml
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

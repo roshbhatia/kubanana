@@ -11,8 +11,8 @@ GO111MODULE=on
 export GO111MODULE
 
 .PHONY: all build build-controller clean test deps docker-build \
- kind-setup kind-cleanup kind-rebuild kind-test kind-logs \
- chainsaw-test analyze help
+ kind-setup kind-cleanup kind-rebuild kind-test kind-helm-test kind-logs \
+ chainsaw-test analyze helm-update helm-package helm-deploy help
 
 help: ## Display this help message
 	@echo "Usage: make [target]"
@@ -85,5 +85,24 @@ kind-rebuild: ## Rebuild and redeploy to kind
 kind-test: ## Run tests in kind
 	./hack/kind/test-event-job.sh
 
+kind-helm-test: ## Test Helm chart in kind
+	./hack/kind/test-helm.sh
+
 kind-logs: ## View controller logs
 	./hack/kind/view-logs.sh controller --follow
+
+helm-update: ## Update Helm chart version from VERSION file
+	@VERSION=$$(cat VERSION); \
+	sed -i '' "s/appVersion: \".*\"/appVersion: \"$$VERSION\"/" charts/kubevent/Chart.yaml
+
+helm-package: helm-update ## Package Helm chart
+	helm package charts/kubevent -d ./charts/dist
+
+helm-deploy: ## Deploy Helm chart to kind cluster
+	./hack/kind/clean-recreate-kind.sh
+	./hack/kind/install-crds.sh
+	helm upgrade --install kubevent ./charts/kubevent \
+		--create-namespace \
+		--namespace kubevent-system \
+		--set deployment.image.tag=latest \
+		--set installCRDs=false

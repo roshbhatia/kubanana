@@ -1,0 +1,5 @@
+owner: roshbhatia
+git-repo: kubevent
+package-path: ./charts/dist
+release-name-template: "{{ .Name }}-{{ .Version }}"
+index-path: ./index.yaml
