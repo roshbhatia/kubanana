@@ -1,6 +1,6 @@
 # Kubevent
 
-Kubevent is a Kubernetes controller that allows you to trigger a [Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/) based on a Kubernetes event (eventually, any generic event sent to the Kubevent webhook).
+Kubevent is a Kubernetes controller that allows you to trigger a [Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/) based on a Kubernetes event or status (eventually, any generic event sent to the Kubevent webhook).
 
 This project is inspired by policy engines like [Kyverno](https://kyverno.io/) and operators like [Metacontroller](https://metacontroller.github.io/metacontroller/intro.html) which allow for flexible controller-like logic as versioned Kubernetes resources.
 
@@ -57,4 +57,4 @@ Run `make help` to list all available make targets for local development and tes
 
 ## Contributing
 
-I don't actively watch this repo but feel free to fork and do what you desire with it.
+I don't actively watch this repo, but feel free to fork and do what you desire with it. I'll likely check the PRs every so often if you're willing to wait.
