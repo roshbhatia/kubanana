@@ -19,7 +19,7 @@ func TestMatchResourceKind(t *testing.T) {
 			name: "exact match",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						ResourceKind: "Pod",
 					},
 				},
@@ -31,7 +31,7 @@ func TestMatchResourceKind(t *testing.T) {
 			name: "no match",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						ResourceKind: "Pod",
 					},
 				},
@@ -43,7 +43,7 @@ func TestMatchResourceKind(t *testing.T) {
 			name: "case sensitive match",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						ResourceKind: "Pod",
 					},
 				},
@@ -74,7 +74,7 @@ func TestMatchNamePattern(t *testing.T) {
 			name: "exact match",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						NamePattern: "test-pod",
 					},
 				},
@@ -86,7 +86,7 @@ func TestMatchNamePattern(t *testing.T) {
 			name: "glob match",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						NamePattern: "test-*",
 					},
 				},
@@ -98,7 +98,7 @@ func TestMatchNamePattern(t *testing.T) {
 			name: "no match",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						NamePattern: "web-*",
 					},
 				},
@@ -110,7 +110,7 @@ func TestMatchNamePattern(t *testing.T) {
 			name: "empty pattern should match anything",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						NamePattern: "",
 					},
 				},
@@ -141,7 +141,7 @@ func TestMatchNamespacePattern(t *testing.T) {
 			name: "exact match",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						NamespacePattern: "default",
 					},
 				},
@@ -153,7 +153,7 @@ func TestMatchNamespacePattern(t *testing.T) {
 			name: "glob match",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						NamespacePattern: "prod-*",
 					},
 				},
@@ -165,7 +165,7 @@ func TestMatchNamespacePattern(t *testing.T) {
 			name: "no match",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						NamespacePattern: "prod-*",
 					},
 				},
@@ -177,7 +177,7 @@ func TestMatchNamespacePattern(t *testing.T) {
 			name: "empty pattern should match anything",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						NamespacePattern: "",
 					},
 				},
@@ -208,7 +208,7 @@ func TestMatchLabelSelector(t *testing.T) {
 			name: "match with labels",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						LabelSelector: &metav1.LabelSelector{
 							MatchLabels: map[string]string{
 								"app": "nginx",
@@ -227,7 +227,7 @@ func TestMatchLabelSelector(t *testing.T) {
 			name: "no match with labels",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						LabelSelector: &metav1.LabelSelector{
 							MatchLabels: map[string]string{
 								"app": "nginx",
@@ -246,7 +246,7 @@ func TestMatchLabelSelector(t *testing.T) {
 			name: "no labels on resource",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						LabelSelector: &metav1.LabelSelector{
 							MatchLabels: map[string]string{
 								"app": "nginx",
@@ -262,7 +262,7 @@ func TestMatchLabelSelector(t *testing.T) {
 			name: "no selector on template",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						LabelSelector: nil,
 					},
 				},
@@ -296,7 +296,7 @@ func TestMatchEventType(t *testing.T) {
 			name: "match CREATE event",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						EventTypes: []string{"CREATE", "DELETE"},
 					},
 				},
@@ -308,7 +308,7 @@ func TestMatchEventType(t *testing.T) {
 			name: "match DELETE event",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						EventTypes: []string{"CREATE", "DELETE"},
 					},
 				},
@@ -320,7 +320,7 @@ func TestMatchEventType(t *testing.T) {
 			name: "no match UPDATE event",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						EventTypes: []string{"CREATE", "DELETE"},
 					},
 				},
@@ -332,7 +332,7 @@ func TestMatchEventType(t *testing.T) {
 			name: "empty event types should not match anything",
 			template: v1alpha1.EventTriggeredJob{
 				Spec: v1alpha1.EventTriggeredJobSpec{
-					EventSelector: v1alpha1.EventSelector{
+					EventSelector: &v1alpha1.EventSelector{
 						EventTypes: []string{},
 					},
 				},
@@ -352,12 +352,131 @@ func TestMatchEventType(t *testing.T) {
 	}
 }
 
+// Test Status Condition Matching
+func TestMatchStatusConditions(t *testing.T) {
+	tests := []struct {
+		name        string
+		template    v1alpha1.EventTriggeredJob
+		conditions  map[string]string
+		shouldMatch bool
+	}{
+		{
+			name: "single condition match",
+			template: v1alpha1.EventTriggeredJob{
+				Spec: v1alpha1.EventTriggeredJobSpec{
+					StatusSelector: &v1alpha1.StatusSelector{
+						Conditions: []v1alpha1.StatusCondition{
+							{
+								Type:   "Ready",
+								Status: "True",
+							},
+						},
+					},
+				},
+			},
+			conditions: map[string]string{
+				"Ready": "True",
+			},
+			shouldMatch: true,
+		},
+		{
+			name: "multiple conditions all match",
+			template: v1alpha1.EventTriggeredJob{
+				Spec: v1alpha1.EventTriggeredJobSpec{
+					StatusSelector: &v1alpha1.StatusSelector{
+						Conditions: []v1alpha1.StatusCondition{
+							{
+								Type:   "Ready",
+								Status: "True",
+							},
+							{
+								Type:   "PodScheduled",
+								Status: "True",
+							},
+						},
+					},
+				},
+			},
+			conditions: map[string]string{
+				"Ready":        "True",
+				"PodScheduled": "True",
+				"Available":    "True", // Extra condition should be ignored
+			},
+			shouldMatch: true,
+		},
+		{
+			name: "one condition doesn't match",
+			template: v1alpha1.EventTriggeredJob{
+				Spec: v1alpha1.EventTriggeredJobSpec{
+					StatusSelector: &v1alpha1.StatusSelector{
+						Conditions: []v1alpha1.StatusCondition{
+							{
+								Type:   "Ready",
+								Status: "True",
+							},
+							{
+								Type:   "PodScheduled",
+								Status: "True",
+							},
+						},
+					},
+				},
+			},
+			conditions: map[string]string{
+				"Ready":        "True",
+				"PodScheduled": "False",
+			},
+			shouldMatch: false,
+		},
+		{
+			name: "missing condition",
+			template: v1alpha1.EventTriggeredJob{
+				Spec: v1alpha1.EventTriggeredJobSpec{
+					StatusSelector: &v1alpha1.StatusSelector{
+						Conditions: []v1alpha1.StatusCondition{
+							{
+								Type:   "Ready",
+								Status: "True",
+							},
+							{
+								Type:   "PodScheduled",
+								Status: "True",
+							},
+						},
+					},
+				},
+			},
+			conditions: map[string]string{
+				"Ready": "True",
+				// PodScheduled is missing
+			},
+			shouldMatch: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			match := testMatchStatusConditions(&tt.template, tt.conditions)
+			if match != tt.shouldMatch {
+				t.Errorf("testMatchStatusConditions() = %v, want %v", match, tt.shouldMatch)
+			}
+		})
+	}
+}
+
 // These are the functions we're testing
 func testMatchResourceKind(template *v1alpha1.EventTriggeredJob, resourceKind string) bool {
+	if template.Spec.EventSelector == nil {
+		return false
+	}
 	return template.Spec.EventSelector.ResourceKind == resourceKind
 }
 
 func testMatchNamePattern(template *v1alpha1.EventTriggeredJob, resourceName string) bool {
+	if template.Spec.EventSelector == nil {
+		return false
+	}
+
 	pattern := template.Spec.EventSelector.NamePattern
 	if pattern == "" {
 		return true // Empty pattern matches anything
@@ -370,6 +489,10 @@ func testMatchNamePattern(template *v1alpha1.EventTriggeredJob, resourceName str
 }
 
 func testMatchNamespacePattern(template *v1alpha1.EventTriggeredJob, resourceNamespace string) bool {
+	if template.Spec.EventSelector == nil {
+		return false
+	}
+
 	pattern := template.Spec.EventSelector.NamespacePattern
 	if pattern == "" {
 		return true // Empty pattern matches anything
@@ -382,6 +505,10 @@ func testMatchNamespacePattern(template *v1alpha1.EventTriggeredJob, resourceNam
 }
 
 func testMatchLabelSelector(template *v1alpha1.EventTriggeredJob, resourceLabels labels.Labels) bool {
+	if template.Spec.EventSelector == nil {
+		return false
+	}
+
 	if template.Spec.EventSelector.LabelSelector == nil {
 		return true // No label selector matches anything
 	}
@@ -395,10 +522,29 @@ func testMatchLabelSelector(template *v1alpha1.EventTriggeredJob, resourceLabels
 }
 
 func testMatchEventType(template *v1alpha1.EventTriggeredJob, eventType string) bool {
+	if template.Spec.EventSelector == nil {
+		return false
+	}
+
 	for _, t := range template.Spec.EventSelector.EventTypes {
 		if t == eventType {
 			return true
 		}
 	}
 	return false
+}
+
+func testMatchStatusConditions(template *v1alpha1.EventTriggeredJob, conditions map[string]string) bool {
+	if template.Spec.StatusSelector == nil {
+		return false
+	}
+
+	for _, requiredCond := range template.Spec.StatusSelector.Conditions {
+		actualStatus, exists := conditions[requiredCond.Type]
+		if !exists || actualStatus != requiredCond.Status {
+			return false
+		}
+	}
+
+	return true
 }

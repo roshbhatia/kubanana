@@ -1,6 +1,5 @@
 # Roadmap
 
-- [ ] In addition to kubernetes events, expose the ability to select on a status
 - [ ] Create helm chart
 - [ ] Expose metrics and traces via OTEL
 - [ ] Have EventTriggeredJob create a meta block (inherit xyz from parent, like annotations, namespace, etc.)

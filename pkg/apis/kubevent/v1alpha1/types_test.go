@@ -22,7 +22,7 @@ func TestEventTriggeredJob(t *testing.T) {
 			Namespace: "default",
 		},
 		Spec: EventTriggeredJobSpec{
-			EventSelector: EventSelector{
+			EventSelector: &EventSelector{
 				ResourceKind:     "Pod",
 				NamePattern:      "web-*",
 				NamespacePattern: "prod-*",
@@ -99,6 +99,88 @@ func TestEventTriggeredJob(t *testing.T) {
 	}
 }
 
+func TestStatusTriggeredJob(t *testing.T) {
+	now := metav1.Now()
+
+	template := EventTriggeredJob{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "EventTriggeredJob",
+			APIVersion: "kubevent.io/v1alpha1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "test-status-template",
+			Namespace: "default",
+		},
+		Spec: EventTriggeredJobSpec{
+			StatusSelector: &StatusSelector{
+				ResourceKind:     "Pod",
+				NamePattern:      "web-*",
+				NamespacePattern: "prod-*",
+				LabelSelector: &metav1.LabelSelector{
+					MatchLabels: map[string]string{
+						"app": "myapp",
+					},
+				},
+				Conditions: []StatusCondition{
+					{
+						Type:   "Ready",
+						Status: "True",
+					},
+				},
+			},
+			JobTemplate: batchv1.JobTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: "test-job",
+				},
+				Spec: batchv1.JobSpec{
+					Template: corev1.PodTemplateSpec{
+						Spec: corev1.PodSpec{
+							Containers: []corev1.Container{
+								{
+									Name:    "test-container",
+									Image:   "busybox",
+									Command: []string{"echo", "hello"},
+								},
+							},
+							RestartPolicy: corev1.RestartPolicyNever,
+						},
+					},
+				},
+			},
+		},
+		Status: EventTriggeredJobStatus{
+			JobsCreated:       2,
+			LastTriggeredTime: &now,
+			Conditions: []metav1.Condition{
+				{
+					Type:               "Ready",
+					Status:             metav1.ConditionTrue,
+					LastTransitionTime: now,
+					Reason:             "TemplateReady",
+					Message:            "Template is ready to process status changes",
+				},
+			},
+		},
+	}
+
+	// Verify that fields are correctly set
+	if template.Spec.StatusSelector.ResourceKind != "Pod" {
+		t.Errorf("Expected ResourceKind to be Pod, got %s", template.Spec.StatusSelector.ResourceKind)
+	}
+
+	if len(template.Spec.StatusSelector.Conditions) != 1 {
+		t.Errorf("Expected 1 condition, got %d", len(template.Spec.StatusSelector.Conditions))
+	}
+
+	if template.Spec.StatusSelector.Conditions[0].Type != "Ready" {
+		t.Errorf("Expected condition Type to be Ready, got %s", template.Spec.StatusSelector.Conditions[0].Type)
+	}
+
+	if template.Spec.StatusSelector.NamePattern != "web-*" {
+		t.Errorf("Expected NamePattern to be web-*, got %s", template.Spec.StatusSelector.NamePattern)
+	}
+}
+
 func TestEventTriggeredJobList(t *testing.T) {
 	list := EventTriggeredJobList{
 		TypeMeta: metav1.TypeMeta{
@@ -135,12 +217,12 @@ func TestEventTriggeredJobList(t *testing.T) {
 func TestEventSelector(t *testing.T) {
 	tests := []struct {
 		name     string
-		selector EventSelector
+		selector *EventSelector
 		wantErr  bool
 	}{
 		{
 			name: "valid selector",
-			selector: EventSelector{
+			selector: &EventSelector{
 				ResourceKind:     "Pod",
 				NamePattern:      "web-*",
 				NamespacePattern: "prod-*",
@@ -155,7 +237,7 @@ func TestEventSelector(t *testing.T) {
 		},
 		{
 			name: "empty resource kind",
-			selector: EventSelector{
+			selector: &EventSelector{
 				ResourceKind: "",
 				EventTypes:   []string{"CREATE"},
 			},
@@ -163,7 +245,7 @@ func TestEventSelector(t *testing.T) {
 		},
 		{
 			name: "empty event types",
-			selector: EventSelector{
+			selector: &EventSelector{
 				ResourceKind: "Pod",
 				EventTypes:   []string{},
 			},
@@ -171,7 +253,7 @@ func TestEventSelector(t *testing.T) {
 		},
 		{
 			name: "invalid event type",
-			selector: EventSelector{
+			selector: &EventSelector{
 				ResourceKind: "Pod",
 				EventTypes:   []string{"INVALID"},
 			},
@@ -189,10 +271,69 @@ func TestEventSelector(t *testing.T) {
 	}
 }
 
+func TestStatusSelector(t *testing.T) {
+	tests := []struct {
+		name     string
+		selector *StatusSelector
+		wantErr  bool
+	}{
+		{
+			name: "valid selector",
+			selector: &StatusSelector{
+				ResourceKind:     "Pod",
+				NamePattern:      "web-*",
+				NamespacePattern: "prod-*",
+				LabelSelector: &metav1.LabelSelector{
+					MatchLabels: map[string]string{
+						"app": "myapp",
+					},
+				},
+				Conditions: []StatusCondition{
+					{
+						Type:   "Ready",
+						Status: "True",
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "empty resource kind",
+			selector: &StatusSelector{
+				ResourceKind: "",
+				Conditions: []StatusCondition{
+					{
+						Type:   "Ready",
+						Status: "True",
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "empty conditions",
+			selector: &StatusSelector{
+				ResourceKind: "Pod",
+				Conditions:   []StatusCondition{},
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := validateStatusSelector(tt.selector)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("validateStatusSelector() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
 // validateEventSelector validates the EventSelector fields
 // This is a helper function for testing, in production this would be
 // implemented in a webhook or admission controller
-func validateEventSelector(selector EventSelector) error {
+func validateEventSelector(selector *EventSelector) error {
 	if selector.ResourceKind == "" {
 		return fmt.Errorf("resourceKind is required")
 	}
@@ -211,6 +352,21 @@ func validateEventSelector(selector EventSelector) error {
 		if !validEventTypes[eventType] {
 			return fmt.Errorf("invalid eventType: %s", eventType)
 		}
+	}
+
+	return nil
+}
+
+// validateStatusSelector validates the StatusSelector fields
+// This is a helper function for testing, in production this would be
+// implemented in a webhook or admission controller
+func validateStatusSelector(selector *StatusSelector) error {
+	if selector.ResourceKind == "" {
+		return fmt.Errorf("resourceKind is required")
+	}
+
+	if len(selector.Conditions) == 0 {
+		return fmt.Errorf("at least one condition is required")
 	}
 
 	return nil

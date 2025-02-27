@@ -13,7 +13,7 @@ func TestEventTriggeredJobDeepCopy(t *testing.T) {
 			Namespace: "default",
 		},
 		Spec: EventTriggeredJobSpec{
-			EventSelector: EventSelector{
+			EventSelector: &EventSelector{
 				ResourceKind: "Pod",
 				NamePattern:  "test-*",
 				EventTypes:   []string{"CREATE", "DELETE"},
@@ -111,7 +111,7 @@ func TestEventTriggeredJobListDeepCopy(t *testing.T) {
 					Namespace: "default",
 				},
 				Spec: EventTriggeredJobSpec{
-					EventSelector: EventSelector{
+					EventSelector: &EventSelector{
 						ResourceKind: "Pod",
 					},
 				},
@@ -122,7 +122,7 @@ func TestEventTriggeredJobListDeepCopy(t *testing.T) {
 					Namespace: "kube-system",
 				},
 				Spec: EventTriggeredJobSpec{
-					EventSelector: EventSelector{
+					EventSelector: &EventSelector{
 						ResourceKind: "Deployment",
 					},
 				},
@@ -175,5 +175,64 @@ func TestEventTriggeredJobListDeepCopy(t *testing.T) {
 	}
 	if len(copy.Items) == len(original.Items) {
 		t.Errorf("Copy was affected by change to original Items length")
+	}
+}
+
+// Test StatusSelector DeepCopy
+func TestStatusSelectorDeepCopy(t *testing.T) {
+	original := &StatusSelector{
+		ResourceKind: "Pod",
+		NamePattern:  "test-*",
+		Conditions: []StatusCondition{
+			{
+				Type:   "Ready",
+				Status: "True",
+			},
+			{
+				Type:     "PodScheduled",
+				Status:   "True",
+				Operator: "Equal",
+			},
+		},
+	}
+
+	// Test DeepCopy
+	copy := original.DeepCopy()
+
+	// Verify the copy is not the same object
+	if copy == original {
+		t.Errorf("DeepCopy returned the same object pointer")
+	}
+
+	// Verify all fields are copied correctly
+	if copy.ResourceKind != original.ResourceKind {
+		t.Errorf("Expected ResourceKind %s, got %s", original.ResourceKind, copy.ResourceKind)
+	}
+	if copy.NamePattern != original.NamePattern {
+		t.Errorf("Expected NamePattern %s, got %s", original.NamePattern, copy.NamePattern)
+	}
+	if len(copy.Conditions) != len(original.Conditions) {
+		t.Errorf("Expected Conditions length %d, got %d", len(original.Conditions), len(copy.Conditions))
+	}
+	if copy.Conditions[0].Type != original.Conditions[0].Type {
+		t.Errorf("Expected Condition Type %s, got %s", original.Conditions[0].Type, copy.Conditions[0].Type)
+	}
+	if copy.Conditions[0].Status != original.Conditions[0].Status {
+		t.Errorf("Expected Condition Status %s, got %s", original.Conditions[0].Status, copy.Conditions[0].Status)
+	}
+
+	// Now change something in the original and make sure the copy is not affected
+	original.ResourceKind = "Deployment"
+	original.Conditions[0].Status = "False"
+	original.Conditions = append(original.Conditions, StatusCondition{Type: "Available", Status: "True"})
+
+	if copy.ResourceKind == original.ResourceKind {
+		t.Errorf("Copy was affected by change to original ResourceKind")
+	}
+	if copy.Conditions[0].Status == original.Conditions[0].Status {
+		t.Errorf("Copy was affected by change to original Condition Status")
+	}
+	if len(copy.Conditions) == len(original.Conditions) {
+		t.Errorf("Copy was affected by change to original Conditions length")
 	}
 }

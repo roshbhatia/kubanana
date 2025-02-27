@@ -20,3 +20,51 @@ spec:
             image: busybox
             command: ["sh", "-c", "echo 'Pod was restarted!' && sleep 5"]
           restartPolicy: Never
+---
+apiVersion: kubevent.roshanbhatia.com/v1alpha1
+kind: EventTriggeredJob
+metadata:
+  name: pod-ready-notification
+spec:
+  statusSelector:
+    resourceKind: "Pod"
+    namePattern: "*"
+    namespacePattern: "default"
+    labelSelector:
+      matchLabels:
+        app: myapp
+    conditions:
+    - type: "Ready"
+      status: "True"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: notification
+            image: busybox
+            command: ["sh", "-c", "echo 'Pod is now Ready!' && sleep 5"]
+          restartPolicy: Never
+---
+apiVersion: kubevent.roshanbhatia.com/v1alpha1
+kind: EventTriggeredJob
+metadata:
+  name: deployment-available-notification
+spec:
+  statusSelector:
+    resourceKind: "Deployment"
+    namePattern: "web-*"
+    conditions:
+    - type: "Available"
+      status: "True"
+    - type: "Progressing"
+      status: "False"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: notification
+            image: busybox
+            command: ["sh", "-c", "echo 'Deployment is now Available!' && sleep 5"]
+          restartPolicy: Never

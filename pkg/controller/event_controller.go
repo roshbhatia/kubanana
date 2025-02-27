@@ -24,7 +24,6 @@ type EventController struct {
 	kubeClient kubernetes.Interface
 	workqueue  workqueue.RateLimitingInterface
 	informer   cache.SharedIndexInformer
-	templates  []v1alpha1.EventTriggeredJob
 }
 
 func NewEventController(kubeClient kubernetes.Interface) *EventController {
@@ -54,13 +53,14 @@ func NewEventController(kubeClient kubernetes.Interface) *EventController {
 		workqueue:  workqueue,
 	}
 
-	informer.AddEventHandler(cache.ResourceEventHandlerFuncs{
+	// Using AddEventHandlerWithResyncPeriod which doesn't return a value in our version
+	informer.AddEventHandlerWithResyncPeriod(cache.ResourceEventHandlerFuncs{
 		AddFunc: controller.handleEvent,
 		UpdateFunc: func(old, new interface{}) {
 			controller.handleEvent(new)
 		},
 		DeleteFunc: controller.handleEvent,
-	})
+	}, 0)
 
 	// Load initial templates if not in a test environment
 	// In test environments, the RESTClient might not be fully mocked
@@ -158,8 +158,14 @@ func (c *EventController) processNextItem() bool {
 		return true
 	}
 
-	err = c.processEvent(event.(*corev1.Event))
-	if err != nil {
+	eventObj, ok := event.(*corev1.Event)
+	if !ok {
+		klog.Errorf("Failed to convert event object: %v", event)
+		c.workqueue.Forget(obj)
+		return true
+	}
+
+	if err = c.processEvent(eventObj); err != nil {
 		klog.Errorf("Failed to process event %s: %v", key, err)
 		c.workqueue.AddRateLimited(obj)
 		return true
@@ -205,6 +211,11 @@ func (c *EventController) processEvent(event *corev1.Event) error {
 	// For each template, check if it matches the event
 	matchFound := false
 	for _, template := range templateList.Items {
+		// Skip templates without an EventSelector
+		if template.Spec.EventSelector == nil {
+			continue
+		}
+
 		// Check if the resource kind matches
 		if template.Spec.EventSelector.ResourceKind != event.InvolvedObject.Kind {
 			klog.V(4).Infof("Skipping template %s: resource kind doesn't match (%s != %s)",

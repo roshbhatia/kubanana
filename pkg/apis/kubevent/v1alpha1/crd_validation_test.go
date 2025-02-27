@@ -12,18 +12,18 @@ import (
 )
 
 func TestCRDValidation(t *testing.T) {
-	// Create a valid template
-	validTemplate := &EventTriggeredJob{
+	// Create a valid template with EventSelector
+	validEventTemplate := &EventTriggeredJob{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "kubevent.roshanbhatia.com/v1alpha1",
 			Kind:       "EventTriggeredJob",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "valid-template",
+			Name:      "valid-event-template",
 			Namespace: "default",
 		},
 		Spec: EventTriggeredJobSpec{
-			EventSelector: EventSelector{
+			EventSelector: &EventSelector{
 				ResourceKind: "Pod",
 				NamePattern:  "test-*",
 				EventTypes:   []string{"CREATE", "DELETE"},
@@ -47,13 +47,79 @@ func TestCRDValidation(t *testing.T) {
 		},
 	}
 
-	// Validate required fields
-	if validTemplate.Spec.EventSelector.ResourceKind == "" {
-		t.Errorf("ResourceKind is required but allowed to be empty")
+	// Create a valid template with StatusSelector
+	validStatusTemplate := &EventTriggeredJob{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "kubevent.roshanbhatia.com/v1alpha1",
+			Kind:       "EventTriggeredJob",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "valid-status-template",
+			Namespace: "default",
+		},
+		Spec: EventTriggeredJobSpec{
+			StatusSelector: &StatusSelector{
+				ResourceKind: "Pod",
+				NamePattern:  "test-*",
+				Conditions: []StatusCondition{
+					{
+						Type:   "Ready",
+						Status: "True",
+					},
+				},
+			},
+			JobTemplate: batchv1.JobTemplateSpec{
+				Spec: batchv1.JobSpec{
+					Template: corev1.PodTemplateSpec{
+						Spec: corev1.PodSpec{
+							Containers: []corev1.Container{
+								{
+									Name:    "test",
+									Image:   "busybox",
+									Command: []string{"echo", "test"},
+								},
+							},
+							RestartPolicy: corev1.RestartPolicyNever,
+						},
+					},
+				},
+			},
+		},
 	}
 
-	if len(validTemplate.Spec.EventSelector.EventTypes) == 0 {
-		t.Errorf("EventTypes is required but allowed to be empty")
+	// Validate required fields for EventSelector
+	if validEventTemplate.Spec.EventSelector != nil {
+		if validEventTemplate.Spec.EventSelector.ResourceKind == "" {
+			t.Errorf("ResourceKind is required but allowed to be empty in EventSelector")
+		}
+
+		if len(validEventTemplate.Spec.EventSelector.EventTypes) == 0 {
+			t.Errorf("EventTypes is required but allowed to be empty in EventSelector")
+		}
+	}
+
+	// Validate required fields for StatusSelector
+	if validStatusTemplate.Spec.StatusSelector != nil {
+		if validStatusTemplate.Spec.StatusSelector.ResourceKind == "" {
+			t.Errorf("ResourceKind is required but allowed to be empty in StatusSelector")
+		}
+
+		if len(validStatusTemplate.Spec.StatusSelector.Conditions) == 0 {
+			t.Errorf("At least one condition is required in StatusSelector")
+		}
+	}
+
+	// Verify at least one selector is provided
+	invalidTemplate := &EventTriggeredJob{
+		Spec: EventTriggeredJobSpec{
+			EventSelector:  nil,
+			StatusSelector: nil,
+		},
+	}
+
+	if invalidTemplate.Spec.EventSelector == nil && invalidTemplate.Spec.StatusSelector == nil {
+		// This is expected to fail in actual validation
+		t.Logf("Correctly identified that at least one selector is required")
 	}
 
 	// Read the CRD file

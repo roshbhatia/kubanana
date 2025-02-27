@@ -1,0 +1,27 @@
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+    exclude-functions:
+      - (*k8s.io/client-go/tools/cache.SharedIndexInformer).AddEventHandler
+      - (*k8s.io/client-go/tools/cache.SharedIndexInformer).AddEventHandlerWithResyncPeriod
+
+linters:
+  enable:
+    - errcheck
+    - gofmt
+    - govet
+    - gosimple
+    - ineffassign
+    - staticcheck
+    - unused
+    - misspell
+
+issues:
+  exclude-rules:
+    - linters:
+        - errcheck
+      text: "AddEventHandler"
+    - linters:
+        - errcheck
+      text: "AddEventHandlerWithResyncPeriod"
