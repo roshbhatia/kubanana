@@ -99,7 +99,7 @@ func TestEventTriggeredJobListDeepCopy(t *testing.T) {
 	original := &EventTriggeredJobList{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "EventTriggeredJobList",
-			APIVersion: "kubevent.roshanbhatia.com/v1alpha1",
+			APIVersion: "kubanana.roshanbhatia.com/v1alpha1",
 		},
 		ListMeta: metav1.ListMeta{
 			ResourceVersion: "12345",

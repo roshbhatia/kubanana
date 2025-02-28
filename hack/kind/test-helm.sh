@@ -17,15 +17,15 @@ echo "Installing CRDs manually..."
 
 # Install Helm chart (with installCRDs set to false)
 echo "Installing Helm chart..."
-helm upgrade --install kubevent "$BASE_DIR"/charts/kubevent \
+helm upgrade --install kubanana "$BASE_DIR"/charts/kubanana \
   --create-namespace \
-  --namespace kubevent-system \
+  --namespace kubanana-system \
   --set deployment.image.tag=latest \
   --set installCRDs=false
 
 # Wait for the controller to be ready
 echo "Waiting for controller deployment to be ready..."
-kubectl wait --for=condition=available --timeout=60s deployment/kubevent-controller -n kubevent-system
+kubectl wait --for=condition=available --timeout=60s deployment/kubanana-controller -n kubanana-system
 
 # Create a test EventTriggeredJob resource
 echo "Creating test EventTriggeredJob resource..."

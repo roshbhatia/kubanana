@@ -1,8 +1,8 @@
-apiVersion: kubevent.roshanbhatia.com/v1alpha1
+apiVersion: kubanana.roshanbhatia.com/v1alpha1
 kind: EventTriggeredJob
 metadata:
   name: namespace-pattern-job-template
-  namespace: kubevent-system
+  namespace: kubanana-system
 spec:
   eventSelector:
     resourceKind: "Pod"

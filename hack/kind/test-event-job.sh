@@ -7,9 +7,9 @@ set -o pipefail
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 ROOT_DIR=$(cd "${SCRIPT_DIR}/../.." && pwd)
 
-if ! kubectl get namespace test-kubevent &>/dev/null; then
+if ! kubectl get namespace test-kubanana &>/dev/null; then
   echo "Creating test namespace..."
-  kubectl create namespace test-kubevent
+  kubectl create namespace test-kubanana
 fi
 
 echo "Applying EventTriggeredJob..."

@@ -1,4 +1,4 @@
-apiVersion: kubevent.roshanbhatia.com/v1alpha1
+apiVersion: kubanana.roshanbhatia.com/v1alpha1
 kind: EventTriggeredJob
 metadata:
   name: pod-restart-notification
@@ -21,7 +21,7 @@ spec:
             command: ["sh", "-c", "echo 'Pod was restarted!' && sleep 5"]
           restartPolicy: Never
 ---
-apiVersion: kubevent.roshanbhatia.com/v1alpha1
+apiVersion: kubanana.roshanbhatia.com/v1alpha1
 kind: EventTriggeredJob
 metadata:
   name: pod-ready-notification
@@ -46,7 +46,7 @@ spec:
             command: ["sh", "-c", "echo 'Pod is now Ready!' && sleep 5"]
           restartPolicy: Never
 ---
-apiVersion: kubevent.roshanbhatia.com/v1alpha1
+apiVersion: kubanana.roshanbhatia.com/v1alpha1
 kind: EventTriggeredJob
 metadata:
   name: deployment-available-notification

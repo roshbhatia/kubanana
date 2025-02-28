@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 
-	"github.com/roshbhatia/kubevent/pkg/controller"
-	"github.com/roshbhatia/kubevent/pkg/util"
+	"github.com/roshbhatia/kubanana/pkg/controller"
+	"github.com/roshbhatia/kubanana/pkg/util"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"

@@ -1,4 +1,4 @@
-apiVersion: kubevent.roshanbhatia.com/v1alpha1
+apiVersion: kubanana.roshanbhatia.com/v1alpha1
 kind: EventTriggeredJob
 metadata:
   name: owner-reference-template
@@ -15,7 +15,7 @@ spec:
         metadata:
           labels:
             test-type: owner-reference
-            kubevent-template: "owner-reference-template"
+            kubanana-template: "owner-reference-template"
         spec:
           containers:
           - name: hello

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/roshbhatia/kubevent/pkg/apis/kubevent/v1alpha1"
+	"github.com/roshbhatia/kubanana/pkg/apis/kubanana/v1alpha1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -82,7 +82,7 @@ func (c *EventController) refreshTemplates() {
 
 	templateList, err := c.kubeClient.CoreV1().RESTClient().
 		Get().
-		AbsPath("/apis/kubevent.roshanbhatia.com/v1alpha1/eventtriggeredjobs").
+		AbsPath("/apis/kubanana.roshanbhatia.com/v1alpha1/eventtriggeredjobs").
 		DoRaw(context.Background())
 
 	if err != nil {
@@ -199,7 +199,7 @@ func (c *EventController) processEvent(event *corev1.Event) error {
 	templateList := &v1alpha1.EventTriggeredJobList{}
 	err := c.kubeClient.CoreV1().RESTClient().
 		Get().
-		AbsPath("/apis/kubevent.roshanbhatia.com/v1alpha1/eventtriggeredjobs").
+		AbsPath("/apis/kubanana.roshanbhatia.com/v1alpha1/eventtriggeredjobs").
 		Do(context.Background()).
 		Into(templateList)
 
@@ -394,10 +394,10 @@ func (c *EventController) createJobFromTemplate(template *v1alpha1.EventTriggere
 
 	// Create labels for the job
 	labels := map[string]string{
-		"kubevent-template":      template.Name,
-		"kubevent-resource-kind": event.InvolvedObject.Kind,
-		"kubevent-resource-name": event.InvolvedObject.Name,
-		"kubevent-event-type":    eventType,
+		"kubanana-template":      template.Name,
+		"kubanana-resource-kind": event.InvolvedObject.Kind,
+		"kubanana-resource-name": event.InvolvedObject.Name,
+		"kubanana-event-type":    eventType,
 	}
 
 	// Create a job from the template
@@ -408,7 +408,7 @@ func (c *EventController) createJobFromTemplate(template *v1alpha1.EventTriggere
 			Labels:       labels,
 			OwnerReferences: []metav1.OwnerReference{
 				{
-					APIVersion: "kubevent.roshanbhatia.com/v1alpha1",
+					APIVersion: "kubanana.roshanbhatia.com/v1alpha1",
 					Kind:       "EventTriggeredJob",
 					Name:       template.Name,
 					UID:        template.UID,

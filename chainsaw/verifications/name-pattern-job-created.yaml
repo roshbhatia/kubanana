@@ -3,10 +3,10 @@ kind: Job
 metadata:
   namespace: default
   labels:
-    kubevent-resource-kind: Pod
-    kubevent-template: name-pattern-test
+    kubanana-resource-kind: Pod
+    kubanana-template: name-pattern-test
   ownerReferences:
-  - apiVersion: kubevent.roshanbhatia.com/v1alpha1
+  - apiVersion: kubanana.roshanbhatia.com/v1alpha1
     kind: EventTriggeredJob
     name: name-pattern-test
 spec:

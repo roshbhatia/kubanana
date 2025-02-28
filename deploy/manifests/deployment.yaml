@@ -1,29 +1,29 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: kubevent-system
+  name: kubanana-system
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kubevent-controller
-  namespace: kubevent-system
+  name: kubanana-controller
+  namespace: kubanana-system
   labels:
-    app: kubevent-controller
+    app: kubanana-controller
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kubevent-controller
+      app: kubanana-controller
   template:
     metadata:
       labels:
-        app: kubevent-controller
+        app: kubanana-controller
     spec:
-      serviceAccountName: kubevent-sa
+      serviceAccountName: kubanana-sa
       containers:
       - name: controller
-        image: kubevent-controller:latest
+        image: kubanana-controller:latest
         imagePullPolicy: IfNotPresent
         resources:
           limits:

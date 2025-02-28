@@ -1,10 +1,10 @@
 apiVersion: v2
-name: kubevent
-description: A Helm chart for Kubevent - A Kubernetes controller that triggers jobs based on Kubernetes events
+name: kubanana
+description: A Helm chart for Kubanana - A Kubernetes controller that triggers jobs based on Kubernetes events
 type: application
 version: 0.1.0
 appVersion: "v0.0.0-alpha"
-home: https://github.com/roshbhatia/kubevent
+home: https://github.com/roshbhatia/kubanana
 keywords:
   - kubernetes
   - controller

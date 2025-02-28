@@ -1,4 +1,4 @@
-module github.com/roshbhatia/kubevent
+module github.com/roshbhatia/kubanana
 
 go 1.21
 

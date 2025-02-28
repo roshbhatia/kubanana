@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/roshbhatia/kubevent/pkg/apis/kubevent/v1alpha1"
+	"github.com/roshbhatia/kubanana/pkg/apis/kubanana/v1alpha1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -234,10 +234,10 @@ func createJobFromTemplate(c *EventController, template *v1alpha1.EventTriggered
 
 	// Create labels for the job
 	labels := map[string]string{
-		"kubevent-template":      template.Name,
-		"kubevent-resource-kind": event.InvolvedObject.Kind,
-		"kubevent-resource-name": event.InvolvedObject.Name,
-		"kubevent-event-type":    eventType,
+		"kubanana-template":      template.Name,
+		"kubanana-resource-kind": event.InvolvedObject.Kind,
+		"kubanana-resource-name": event.InvolvedObject.Name,
+		"kubanana-event-type":    eventType,
 	}
 
 	// Create a job based on the template
@@ -248,7 +248,7 @@ func createJobFromTemplate(c *EventController, template *v1alpha1.EventTriggered
 			Labels:       labels,
 			OwnerReferences: []metav1.OwnerReference{
 				{
-					APIVersion: "kubevent.roshanbhatia.com/v1alpha1",
+					APIVersion: "kubanana.roshanbhatia.com/v1alpha1",
 					Kind:       "EventTriggeredJob",
 					Name:       template.Name,
 					UID:        template.UID,
@@ -307,10 +307,10 @@ func createStatusJobFromTemplate(c *StatusController, template *v1alpha1.EventTr
 
 	// Create labels for the job
 	labels := map[string]string{
-		"kubevent-template":      template.Name,
-		"kubevent-resource-kind": resourceKind,
-		"kubevent-resource-name": name,
-		"kubevent-trigger-type":  "status",
+		"kubanana-template":      template.Name,
+		"kubanana-resource-kind": resourceKind,
+		"kubanana-resource-name": name,
+		"kubanana-trigger-type":  "status",
 	}
 
 	// Create a job based on the template
@@ -321,7 +321,7 @@ func createStatusJobFromTemplate(c *StatusController, template *v1alpha1.EventTr
 			Labels:       labels,
 			OwnerReferences: []metav1.OwnerReference{
 				{
-					APIVersion: "kubevent.roshanbhatia.com/v1alpha1",
+					APIVersion: "kubanana.roshanbhatia.com/v1alpha1",
 					Kind:       "EventTriggeredJob",
 					Name:       template.Name,
 					UID:        template.UID,

@@ -5,8 +5,8 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GOINSTALL=$(GOCMD) install
 DOCKER=docker
-PROJECT=kubevent
-CONTROLLER_BINARY=kubevent-controller
+PROJECT=kubanana
+CONTROLLER_BINARY=kubanana-controller
 GO111MODULE=on
 export GO111MODULE
 
@@ -93,16 +93,16 @@ kind-logs: ## View controller logs
 
 helm-update: ## Update Helm chart version from VERSION file
 	@VERSION=$$(cat VERSION); \
-	sed -i '' "s/appVersion: \".*\"/appVersion: \"$$VERSION\"/" charts/kubevent/Chart.yaml
+	sed -i '' "s/appVersion: \".*\"/appVersion: \"$$VERSION\"/" charts/kubanana/Chart.yaml
 
 helm-package: helm-update ## Package Helm chart
-	helm package charts/kubevent -d ./charts/dist
+	helm package charts/kubanana -d ./charts/dist
 
 helm-deploy: ## Deploy Helm chart to kind cluster
 	./hack/kind/clean-recreate-kind.sh
 	./hack/kind/install-crds.sh
-	helm upgrade --install kubevent ./charts/kubevent \
+	helm upgrade --install kubanana ./charts/kubanana \
 		--create-namespace \
-		--namespace kubevent-system \
+		--namespace kubanana-system \
 		--set deployment.image.tag=latest \
 		--set installCRDs=false

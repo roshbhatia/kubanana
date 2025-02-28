@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: kubevent-controller
-  namespace: kubevent-system
+  name: kubanana-controller
+  namespace: kubanana-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: kubevent-controller
+  name: kubanana-controller
 rules:
 - apiGroups: [""]
   resources: ["events", "pods"]
@@ -15,42 +15,42 @@ rules:
 - apiGroups: ["batch"]
   resources: ["jobs"]
   verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
-- apiGroups: ["kubevent.roshanbhatia.com"]
+- apiGroups: ["kubanana.roshanbhatia.com"]
   resources: ["EventTriggeredJob"]
   verbs: ["get", "list", "watch", "update", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: kubevent-controller
+  name: kubanana-controller
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: kubevent-controller
+  name: kubanana-controller
 subjects:
 - kind: ServiceAccount
-  name: kubevent-controller
-  namespace: kubevent-system
+  name: kubanana-controller
+  namespace: kubanana-system
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kubevent-controller
-  namespace: kubevent-system
+  name: kubanana-controller
+  namespace: kubanana-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kubevent-controller
+      app: kubanana-controller
   template:
     metadata:
       labels:
-        app: kubevent-controller
+        app: kubanana-controller
     spec:
-      serviceAccountName: kubevent-controller
+      serviceAccountName: kubanana-controller
       containers:
       - name: controller
-        image: kubevent-controller:latest
+        image: kubanana-controller:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

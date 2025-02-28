@@ -7,11 +7,11 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o kubevent-controller cmd/controller/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o kubanana-controller cmd/controller/main.go
 
 FROM gcr.io/distroless/static:nonroot
 WORKDIR /
-COPY --from=builder /workspace/kubevent-controller .
+COPY --from=builder /workspace/kubanana-controller .
 USER 65532:65532
 
-ENTRYPOINT ["/kubevent-controller"]
+ENTRYPOINT ["/kubanana-controller"]

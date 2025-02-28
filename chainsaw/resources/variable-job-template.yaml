@@ -1,4 +1,4 @@
-apiVersion: kubevent.roshanbhatia.com/v1alpha1
+apiVersion: kubanana.roshanbhatia.com/v1alpha1
 kind: EventTriggeredJob
 metadata:
   name: variable-test
@@ -15,7 +15,7 @@ spec:
         metadata:
           labels:
             test-type: variable
-            kubevent-resource-name: "test-pod-for-variables"
+            kubanana-resource-name: "test-pod-for-variables"
         spec:
           containers:
           - name: hello

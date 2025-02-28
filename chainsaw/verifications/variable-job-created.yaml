@@ -3,11 +3,11 @@ kind: Job
 metadata:
   namespace: default
   labels:
-    kubevent-resource-kind: Pod
-    kubevent-resource-name: test-pod-for-variables
-    kubevent-template: variable-test
+    kubanana-resource-kind: Pod
+    kubanana-resource-name: test-pod-for-variables
+    kubanana-template: variable-test
   ownerReferences:
-  - apiVersion: kubevent.roshanbhatia.com/v1alpha1
+  - apiVersion: kubanana.roshanbhatia.com/v1alpha1
     kind: EventTriggeredJob
     name: variable-test
 spec:
@@ -15,7 +15,7 @@ spec:
     metadata:
       labels:
         test-type: variable
-        kubevent-resource-name: test-pod-for-variables
+        kubanana-resource-name: test-pod-for-variables
     spec:
       containers:
       - name: hello

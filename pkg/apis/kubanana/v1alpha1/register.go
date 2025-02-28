@@ -8,7 +8,7 @@ import (
 
 const (
 	// GroupName is the group name used in this package
-	GroupName = "kubevent.roshanbhatia.com"
+	GroupName = "kubanana.roshanbhatia.com"
 	// Version is the version of the API
 	Version = "v1alpha1"
 )

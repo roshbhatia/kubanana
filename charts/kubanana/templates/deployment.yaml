@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kubevent-controller
+  name: kubanana-controller
   namespace: {{ .Values.namespace.name }}
   labels:
-    app: kubevent-controller
-    app.kubernetes.io/name: {{ include "kubevent.name" . }}
+    app: kubanana-controller
+    app.kubernetes.io/name: {{ include "kubanana.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -16,11 +16,11 @@ spec:
   replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
-      app: kubevent-controller
+      app: kubanana-controller
   template:
     metadata:
       labels:
-        app: kubevent-controller
+        app: kubanana-controller
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       containers:

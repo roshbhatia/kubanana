@@ -3,7 +3,7 @@ package controller
 import (
 	"testing"
 
-	"github.com/roshbhatia/kubevent/pkg/apis/kubevent/v1alpha1"
+	"github.com/roshbhatia/kubanana/pkg/apis/kubanana/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 )

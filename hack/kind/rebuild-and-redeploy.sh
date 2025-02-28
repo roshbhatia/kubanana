@@ -9,12 +9,12 @@ echo "Building Docker images..."
 make docker-build
 
 echo "Loading images into Kind..."
-kind load docker-image kubevent-controller:latest --name kubevent
+kind load docker-image kubanana-controller:latest --name kubanana
 
 echo "Restarting deployments to pick up new images..."
-kubectl -n kubevent-system rollout restart deployment/kubevent-controller
+kubectl -n kubanana-system rollout restart deployment/kubanana-controller
 
 echo "Waiting for deployments to be ready..."
-kubectl -n kubevent-system rollout status deployment/kubevent-controller --timeout=60s
+kubectl -n kubanana-system rollout status deployment/kubanana-controller --timeout=60s
 
 echo "Redeployment complete."

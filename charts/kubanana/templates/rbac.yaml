@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.serviceAccount.name }}
   namespace: {{ .Values.namespace.name }}
   labels:
-    app.kubernetes.io/name: {{ include "kubevent.name" . }}
+    app.kubernetes.io/name: {{ include "kubanana.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -17,7 +17,7 @@ kind: ClusterRole
 metadata:
   name: {{ .Values.rbac.name }}
   labels:
-    app.kubernetes.io/name: {{ include "kubevent.name" . }}
+    app.kubernetes.io/name: {{ include "kubanana.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -28,7 +28,7 @@ rules:
 - apiGroups: [""]
   resources: ["events"]
   verbs: ["get", "list", "watch"]
-- apiGroups: ["kubevent.roshanbhatia.com"]
+- apiGroups: ["kubanana.roshanbhatia.com"]
   resources: ["eventtriggeredjobs", "eventtriggeredjobs/status"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 - apiGroups: ["batch"]
@@ -43,7 +43,7 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ .Values.rbac.name }}-binding
   labels:
-    app.kubernetes.io/name: {{ include "kubevent.name" . }}
+    app.kubernetes.io/name: {{ include "kubanana.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}

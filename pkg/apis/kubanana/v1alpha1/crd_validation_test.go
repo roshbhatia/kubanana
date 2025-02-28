@@ -15,7 +15,7 @@ func TestCRDValidation(t *testing.T) {
 	// Create a valid template with EventSelector
 	validEventTemplate := &EventTriggeredJob{
 		TypeMeta: metav1.TypeMeta{
-			APIVersion: "kubevent.roshanbhatia.com/v1alpha1",
+			APIVersion: "kubanana.roshanbhatia.com/v1alpha1",
 			Kind:       "EventTriggeredJob",
 		},
 		ObjectMeta: metav1.ObjectMeta{
@@ -50,7 +50,7 @@ func TestCRDValidation(t *testing.T) {
 	// Create a valid template with StatusSelector
 	validStatusTemplate := &EventTriggeredJob{
 		TypeMeta: metav1.TypeMeta{
-			APIVersion: "kubevent.roshanbhatia.com/v1alpha1",
+			APIVersion: "kubanana.roshanbhatia.com/v1alpha1",
 			Kind:       "EventTriggeredJob",
 		},
 		ObjectMeta: metav1.ObjectMeta{
@@ -124,7 +124,7 @@ func TestCRDValidation(t *testing.T) {
 
 	// Read the CRD file
 	rootDir := findRootDir(t)
-	crdPath := filepath.Join(rootDir, "deploy", "crds", "kubevent.roshanbhatia.com_eventtriggeredjobs.yaml")
+	crdPath := filepath.Join(rootDir, "deploy", "crds", "kubanana.roshanbhatia.com_eventtriggeredjobs.yaml")
 
 	if _, err := os.Stat(crdPath); os.IsNotExist(err) {
 		t.Skipf("CRD file not found at %s, skipping test", crdPath)
@@ -176,8 +176,8 @@ func TestCRDValidation(t *testing.T) {
 
 	// Verify the example directly from the map
 	apiVersion, ok := exampleMap["apiVersion"].(string)
-	if !ok || apiVersion != "kubevent.roshanbhatia.com/v1alpha1" {
-		t.Errorf("Expected APIVersion to be 'kubevent.roshanbhatia.com/v1alpha1', got '%v'", apiVersion)
+	if !ok || apiVersion != "kubanana.roshanbhatia.com/v1alpha1" {
+		t.Errorf("Expected APIVersion to be 'kubanana.roshanbhatia.com/v1alpha1', got '%v'", apiVersion)
 	}
 
 	kindVal, ok := exampleMap["kind"].(string)

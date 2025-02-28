@@ -3,7 +3,7 @@ kind: Job
 metadata:
   # This will look for any job in any namespace that has labels indicating it's from our status template
   labels:
-    kubevent-resource-kind: Pod
-    kubevent-trigger-type: status
+    kubanana-resource-kind: Pod
+    kubanana-trigger-type: status
 check:
   existence: true

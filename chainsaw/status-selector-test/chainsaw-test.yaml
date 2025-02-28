@@ -23,7 +23,7 @@ spec:
         content: |
           #!/bin/bash
           # Check for any jobs with our labels
-          JOBS=$(kubectl get jobs --all-namespaces -l kubevent-resource-kind=Pod,kubevent-trigger-type=status | grep -c .)
+          JOBS=$(kubectl get jobs --all-namespaces -l kubanana-resource-kind=Pod,kubanana-trigger-type=status | grep -c .)
           if [ "$JOBS" -ge "1" ]; then
             echo "Found at least one job matching our criteria"
             exit 0

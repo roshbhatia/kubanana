@@ -1,11 +1,11 @@
-# Default values for kubevent.
+# Default values for kubanana.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 # Namespace configuration
 namespace:
   # Name of the namespace
-  name: kubevent-system
+  name: kubanana-system
   # Whether to create the namespace (set to false if you're managing namespaces separately)
   create: true
 
@@ -14,7 +14,7 @@ deployment:
   # Fixed at 1 replica for now
   replicas: 1
   image:
-    repository: kubevent-controller
+    repository: kubanana-controller
     tag: "latest"
     pullPolicy: IfNotPresent
   resources:
@@ -28,12 +28,12 @@ deployment:
 # ServiceAccount configuration
 serviceAccount:
   # Name of the service account to use
-  name: kubevent-sa
+  name: kubanana-sa
 
 # RBAC configuration
 rbac:
   # The name of the ClusterRole to create
-  name: kubevent-role
+  name: kubanana-role
 
 # CRD installation (not required if you install CRDs separately)
 installCRDs: false

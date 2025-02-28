@@ -39,7 +39,7 @@ spec:
         content: |
           #!/bin/bash
           # Check that no job was created for the pod in non-matching namespace
-          JOBS=$(kubectl get jobs -n kubevent-system --no-headers | grep "dev-namespace" | wc -l)
+          JOBS=$(kubectl get jobs -n kubanana-system --no-headers | grep "dev-namespace" | wc -l)
           if [ "$JOBS" -eq "0" ]; then
             echo "No jobs were created for pod in non-matching namespace as expected"
             exit 0

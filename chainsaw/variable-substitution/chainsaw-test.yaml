@@ -29,9 +29,9 @@ spec:
         content: |
           #!/bin/bash
           set -e
-          kubectl get jobs -n default -l kubevent-resource-name=test-pod-for-variables | grep test-pod-for-variables
+          kubectl get jobs -n default -l kubanana-resource-name=test-pod-for-variables | grep test-pod-for-variables
           # Get the pod name created by the job
-          POD_NAME=$(kubectl get pods -n default -l job-name=$(kubectl get jobs -n default -l kubevent-resource-name=test-pod-for-variables -o jsonpath='{.items[0].metadata.name}') -o jsonpath='{.items[0].metadata.name}')
+          POD_NAME=$(kubectl get pods -n default -l job-name=$(kubectl get jobs -n default -l kubanana-resource-name=test-pod-for-variables -o jsonpath='{.items[0].metadata.name}') -o jsonpath='{.items[0].metadata.name}')
           # Wait for pod to complete
           kubectl wait --for=condition=Ready pod/$POD_NAME -n default --timeout=30s
           # Check logs for variable substitution

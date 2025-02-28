@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/roshbhatia/kubevent/pkg/apis/kubevent/v1alpha1"
+	"github.com/roshbhatia/kubanana/pkg/apis/kubanana/v1alpha1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -63,7 +63,7 @@ func (c *StatusController) refreshTemplates() {
 	templateList := &v1alpha1.EventTriggeredJobList{}
 	err := c.kubeClient.CoreV1().RESTClient().
 		Get().
-		AbsPath("/apis/kubevent.roshanbhatia.com/v1alpha1/eventtriggeredjobs").
+		AbsPath("/apis/kubanana.roshanbhatia.com/v1alpha1/eventtriggeredjobs").
 		Do(context.Background()).
 		Into(templateList)
 
@@ -501,10 +501,10 @@ func (c *StatusController) createJobFromTemplate(
 
 	// Create labels for the job
 	labels := map[string]string{
-		"kubevent-template":      template.Name,
-		"kubevent-resource-kind": resourceKind,
-		"kubevent-resource-name": name,
-		"kubevent-trigger-type":  "status",
+		"kubanana-template":      template.Name,
+		"kubanana-resource-kind": resourceKind,
+		"kubanana-resource-name": name,
+		"kubanana-trigger-type":  "status",
 	}
 
 	// Get resource condition types and statuses for labels
@@ -525,7 +525,7 @@ func (c *StatusController) createJobFromTemplate(
 			Labels:    labels,
 			OwnerReferences: []metav1.OwnerReference{
 				{
-					APIVersion: "kubevent.roshanbhatia.com/v1alpha1",
+					APIVersion: "kubanana.roshanbhatia.com/v1alpha1",
 					Kind:       "EventTriggeredJob",
 					Name:       template.Name,
 					UID:        template.UID,

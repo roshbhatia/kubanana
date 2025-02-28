@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/roshbhatia/kubevent/pkg/apis/kubevent/v1alpha1"
+	"github.com/roshbhatia/kubanana/pkg/apis/kubanana/v1alpha1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

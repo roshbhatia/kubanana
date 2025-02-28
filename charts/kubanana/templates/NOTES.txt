@@ -1,12 +1,12 @@
 Thank you for installing {{ .Chart.Name }}.
 
-Your Kubevent controller has been deployed to the {{ .Values.namespace.name }} namespace.
+Your Kubanana controller has been deployed to the {{ .Values.namespace.name }} namespace.
 
 To check the deployment status:
   kubectl get deployment -n {{ .Values.namespace.name }}
 
 To check the controller logs:
-  kubectl logs -n {{ .Values.namespace.name }} -l app=kubevent-controller -f
+  kubectl logs -n {{ .Values.namespace.name }} -l app=kubanana-controller -f
 
 For more information about creating EventTriggeredJob resources, see:
-  https://github.com/roshbhatia/kubevent
+  https://github.com/roshbhatia/kubanana

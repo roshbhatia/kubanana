@@ -3,10 +3,10 @@ kind: Job
 metadata:
   namespace: default
   labels:
-    kubevent-resource-kind: Pod
-    kubevent-template: test-job-template
+    kubanana-resource-kind: Pod
+    kubanana-template: test-job-template
   ownerReferences:
-  - apiVersion: kubevent.roshanbhatia.com/v1alpha1
+  - apiVersion: kubanana.roshanbhatia.com/v1alpha1
     kind: EventTriggeredJob
     name: test-job-template
 spec:
@@ -17,7 +17,7 @@ spec:
         image: busybox
         command:
         - echo
-        - "Hello from Kubevent!"
+        - "Hello from Kubanana!"
         env:
         - name: RESOURCE_KIND
           value: Pod

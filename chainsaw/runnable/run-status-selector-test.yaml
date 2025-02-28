@@ -4,16 +4,16 @@ metadata:
   name: status-selector-test
 spec:
   steps:
-  - name: setup-kubevent
+  - name: setup-kubanana
     try:
     - apply:
-        file: ../setup/kubevent-system-namespace.yaml
+        file: ../setup/kubanana-system-namespace.yaml
     - apply:
-        file: ../setup/kubevent-crd.yaml
+        file: ../setup/kubanana-crd.yaml
     - sleep:
         duration: 5s
     - apply:
-        file: ../setup/kubevent-controller.yaml
+        file: ../setup/kubanana-controller.yaml
     - sleep:
         duration: 10s
   # Status Selector Test

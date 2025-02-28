@@ -1,4 +1,4 @@
-apiVersion: kubevent.roshanbhatia.com/v1alpha1
+apiVersion: kubanana.roshanbhatia.com/v1alpha1
 kind: EventTriggeredJob
 metadata:
   name: label-selector-job-template

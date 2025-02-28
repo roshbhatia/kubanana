@@ -12,7 +12,7 @@ ${SCRIPT_DIR}/clean-recreate-kind.sh
 
 # Now manually install components
 echo "Installing CRD..."
-kubectl apply -f "${ROOT_DIR}/deploy/crds/kubevent.roshanbhatia.com_eventtriggeredjobs.yaml"
+kubectl apply -f "${ROOT_DIR}/deploy/crds/kubanana.roshanbhatia.com_eventtriggeredjobs.yaml"
 
 echo "Setting up namespace and RBAC..."
 kubectl apply -f "${ROOT_DIR}/deploy/manifests/rbac.yaml"

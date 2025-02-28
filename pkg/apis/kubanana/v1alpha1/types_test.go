@@ -15,7 +15,7 @@ func TestEventTriggeredJob(t *testing.T) {
 	template := EventTriggeredJob{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "EventTriggeredJob",
-			APIVersion: "kubevent.io/v1alpha1",
+			APIVersion: "kubanana.io/v1alpha1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "test-template",
@@ -105,7 +105,7 @@ func TestStatusTriggeredJob(t *testing.T) {
 	template := EventTriggeredJob{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "EventTriggeredJob",
-			APIVersion: "kubevent.io/v1alpha1",
+			APIVersion: "kubanana.io/v1alpha1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "test-status-template",
@@ -185,7 +185,7 @@ func TestEventTriggeredJobList(t *testing.T) {
 	list := EventTriggeredJobList{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "EventTriggeredJobList",
-			APIVersion: "kubevent.io/v1alpha1",
+			APIVersion: "kubanana.io/v1alpha1",
 		},
 		Items: []EventTriggeredJob{
 			{

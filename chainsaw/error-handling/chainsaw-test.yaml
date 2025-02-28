@@ -30,7 +30,7 @@ spec:
           #!/bin/bash
           set -e
           # Check if controller is still running despite invalid template
-          STATUS=$(kubectl get pods -n kubevent-system -l app=kubevent-controller -o jsonpath='{.items[0].status.phase}')
+          STATUS=$(kubectl get pods -n kubanana-system -l app=kubanana-controller -o jsonpath='{.items[0].status.phase}')
           if [ "$STATUS" = "Running" ]; then
             echo "Controller still running after invalid template: $STATUS"
             exit 0

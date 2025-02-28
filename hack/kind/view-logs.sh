@@ -19,7 +19,7 @@ if [ $# -eq 2 ] && [ "$2" == "--follow" ]; then
 fi
 
 if [ "$COMPONENT" == "controller" ]; then
-  POD=$(kubectl -n kubevent-system get pods -l app=kubevent-controller -o name | head -n 1)
+  POD=$(kubectl -n kubanana-system get pods -l app=kubanana-controller -o name | head -n 1)
 else
   echo "Unknown component: $COMPONENT. Must be 'controller'."
   exit 1
@@ -31,4 +31,4 @@ if [ -z "$POD" ]; then
 fi
 
 echo "Viewing logs for $POD..."
-kubectl -n kubevent-system logs "$POD" $FOLLOW_FLAG
+kubectl -n kubanana-system logs "$POD" $FOLLOW_FLAG

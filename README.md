@@ -1,17 +1,21 @@
-# Kubevent
+<p align="center">
+    <img src="assets/kubanana-logo.png" width="35%" align="center" alt="kubanana">
+</p>
 
-Kubevent is a Kubernetes controller that allows you to trigger a [Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/) based on a Kubernetes event or status (eventually, any generic event sent to the Kubevent webhook).
+# Kubanana
+
+Kubanana is a Kubernetes controller that allows you to trigger a [Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/) based on a Kubernetes event or status (eventually, any generic event sent to the Kubanana webhook).
 
 This project is inspired by policy engines like [Kyverno](https://kyverno.io/) and operators like [Metacontroller](https://metacontroller.github.io/metacontroller/intro.html) which allow for flexible controller-like logic as versioned Kubernetes resources.
 
 This tool, however, is solely used to trigger a Job when an event happens in an opinionated fashion. Kyverno and Metacontroller can be used for similar purposes but are significantly heavier dependencies.
 
-## Using Kubevent: the EventTriggeredJob
+## Using Kubanana: the EventTriggeredJob
 
-Kubevent introduces the `EventTriggeredJob` CRD to help associate Jobs with events:
+Kubanana introduces the `EventTriggeredJob` CRD to help associate Jobs with events:
 
 ```yaml
-apiVersion: kubevent.roshanbhatia.com/v1alpha1
+apiVersion: kubanana.roshanbhatia.com/v1alpha1
 kind: EventTriggeredJob
 metadata:
   name: example-job-template
@@ -31,7 +35,7 @@ spec:
           containers:
           - name: hello
             image: busybox
-            command: ["echo", "Hello from Kubevent!"]
+            command: ["echo", "Hello from Kubanana!"]
           restartPolicy: Never
 ```
 
