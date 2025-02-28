@@ -28,6 +28,16 @@ spec:
       matchLabels:
         app: myapp
     eventTypes: ["CREATE", "DELETE"]
+  statusSelector:
+    resourceKind: "Pod"
+    namePattern: "*"
+    namespacePattern: "default"
+    labelSelector:
+      matchLabels:
+        app: myapp
+    conditions:
+    - type: "Ready"
+      status: "True"
   jobTemplate:
     spec:
       template:
