@@ -57,6 +57,34 @@ This CRD allows you to define:
 - Which event types should trigger a job (CREATE, UPDATE, DELETE)
 - The job template to execute when an event is triggered
 
+## Installation
+
+### Using Helm Chart
+
+You can install Kubanana using our Helm chart hosted on GHCR:
+
+```bash
+# Add the Helm repository
+helm pull oci://ghcr.io/roshbhatia/kubanana/charts/kubanana --version <version>
+
+# Install the chart
+helm install kubanana oci://ghcr.io/roshbhatia/kubanana/charts/kubanana --version <version> \
+  --create-namespace \
+  --namespace kubanana-system
+```
+
+### Using Container Image
+
+The Kubanana controller image is also available on GHCR:
+
+```bash
+# Pull the image
+docker pull ghcr.io/roshbhatia/kubanana/controller:latest
+
+# Or use a specific version
+docker pull ghcr.io/roshbhatia/kubanana/controller:v0.1.0
+```
+
 ## Local Development
 
 ### Requirements

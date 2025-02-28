@@ -14,7 +14,7 @@ deployment:
   # Fixed at 1 replica for now
   replicas: 1
   image:
-    repository: kubanana-controller
+    repository: ghcr.io/roshbhatia/kubanana/controller
     tag: "latest"
     pullPolicy: IfNotPresent
   resources:
