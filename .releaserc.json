@@ -1,0 +1,23 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/npm",
+    [
+      "@semantic-release/exec", 
+      {
+        "prepareCmd": "VERSION=v${nextRelease.version} VERSION_NO_V=${nextRelease.version} sed -i.bak -e \"s/appVersion: \\\".*\\\"/appVersion: \\\"v${nextRelease.version}\\\"/ ; s/version: .*/version: ${nextRelease.version}/\" charts/kubanana/Chart.yaml && sed -i.bak \"s/tag: \\\".*\\\"/tag: \\\"v${nextRelease.version}\\\"/\" charts/kubanana/values.yaml && rm -f charts/kubanana/Chart.yaml.bak charts/kubanana/values.yaml.bak",
+        "publishCmd": "echo 'Version v${nextRelease.version} has been released'"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {"path": "charts/dist/*.tgz", "label": "Helm Chart"}
+        ]
+      }
+    ]
+  ]
+}

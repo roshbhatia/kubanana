@@ -82,7 +82,7 @@ The Kubanana controller image is also available on GHCR:
 docker pull ghcr.io/roshbhatia/kubanana/controller:latest
 
 # Or use a specific version
-docker pull ghcr.io/roshbhatia/kubanana/controller:v0.1.0
+docker pull ghcr.io/roshbhatia/kubanana/controller:v1.0.0
 ```
 
 ## Local Development

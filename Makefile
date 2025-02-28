@@ -91,11 +91,15 @@ kind-helm-test: ## Test Helm chart in kind
 kind-logs: ## View controller logs
 	./hack/kind/view-logs.sh controller --follow
 
-helm-update: ## Update Helm chart version from VERSION file
-	@VERSION=$$(cat VERSION); \
-	sed -i '' "s/appVersion: \".*\"/appVersion: \"$$VERSION\"/" charts/kubanana/Chart.yaml
+helm-update: ## Update Helm chart version from package.json
+	@PKG_VERSION=$$(node -p "require('./package.json').version"); \
+	VERSION="v$$PKG_VERSION"; \
+	sed -i '' "s/appVersion: \".*\"/appVersion: \"$$VERSION\"/" charts/kubanana/Chart.yaml; \
+	sed -i '' "s/version: .*/version: $$PKG_VERSION/" charts/kubanana/Chart.yaml; \
+	sed -i '' "s/tag: \".*\"/tag: \"$$VERSION\"/" charts/kubanana/values.yaml
 
-helm-package: helm-update ## Package Helm chart
+helm-package: ## Package Helm chart
+	mkdir -p charts/dist
 	helm package charts/kubanana -d ./charts/dist
 
 helm-deploy: ## Deploy Helm chart to kind cluster

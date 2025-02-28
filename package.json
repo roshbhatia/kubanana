@@ -1,0 +1,28 @@
+{
+  "name": "kubanana",
+  "private": true,
+  "version": "0.0.0-alpha",
+  "description": "A Kubernetes controller that triggers jobs based on Kubernetes events",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roshbhatia/kubanana.git"
+  },
+  "author": "Roshan Bhatia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/roshbhatia/kubanana/issues"
+  },
+  "homepage": "https://github.com/roshbhatia/kubanana#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/github": "^9.2.3",
+    "@semantic-release/npm": "^11.0.2",
+    "husky": "^8.0.3",
+    "semantic-release": "^22.0.8"
+  },
+  "scripts": {
+    "prepare": "husky install"
+  }
+}
