@@ -4,6 +4,8 @@
 
 # Kubanana
 
+*THIS PROJECT IS NOT YET PRODUCTION READY AND IS SUBJECT TO BREAKING CHANGES*
+
 Kubanana is a Kubernetes controller that allows you to trigger a [Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/) based on a Kubernetes event or status (eventually, any generic event sent to the Kubanana webhook).
 
 This project is inspired by policy engines like [Kyverno](https://kyverno.io/) and operators like [Metacontroller](https://metacontroller.github.io/metacontroller/intro.html) which allow for flexible controller-like logic as versioned Kubernetes resources.
