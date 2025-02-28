@@ -78,12 +78,10 @@ helm install kubanana oci://ghcr.io/roshbhatia/kubanana/charts/kubanana --versio
 The Kubanana controller image is also available on GHCR:
 
 ```bash
-# Pull the image
-docker pull ghcr.io/roshbhatia/kubanana/controller:latest
-
-# Or use a specific version
-docker pull ghcr.io/roshbhatia/kubanana/controller:v1.0.0
+docker pull ghcr.io/roshbhatia/kubanana/controller:v<version>
 ```
+
+Raw manifests are present at `deploy/manifests`.
 
 ## Local Development
 
