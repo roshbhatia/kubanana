@@ -45,7 +45,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install -g semantic-release @semantic-release/exec @semantic-release/github @semantic-release/npm
+        run: yarn
 
       - name: Create package directory
         run: mkdir -p charts/dist
