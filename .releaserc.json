@@ -12,6 +12,13 @@
       }
     ],
     [
+      "@semantic-release/git",
+      {
+        "assets": ["package.json", "charts/kubanana/Chart.yaml", "charts/kubanana/values.yaml", "README.md"],
+        "message": "chore: [skip ci] pre-release commit for v${nextRelease.version}"
+      }
+    ],
+    [
       "@semantic-release/github",
       {
         "assets": [
