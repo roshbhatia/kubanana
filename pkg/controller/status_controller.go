@@ -93,11 +93,59 @@ func (c *StatusController) refreshTemplates() {
 
 // setupInformerForKind creates an informer for a specific resource kind
 func (c *StatusController) setupInformerForKind(kind string) {
-	// This is a simplified version - in a real implementation,
-	// you'd need to get the proper GVK for the resource
+	// Map common resource kinds to their correct GVR
+	var gvr schema.GroupVersionResource
+
+	switch kind {
+	case "Pod":
+		gvr = schema.GroupVersionResource{
+			Group:    "",
+			Version:  "v1",
+			Resource: "pods",
+		}
+	case "Deployment":
+		gvr = schema.GroupVersionResource{
+			Group:    "apps",
+			Version:  "v1",
+			Resource: "deployments",
+		}
+	case "StatefulSet":
+		gvr = schema.GroupVersionResource{
+			Group:    "apps",
+			Version:  "v1",
+			Resource: "statefulsets",
+		}
+	case "DaemonSet":
+		gvr = schema.GroupVersionResource{
+			Group:    "apps",
+			Version:  "v1",
+			Resource: "daemonsets",
+		}
+	case "Job":
+		gvr = schema.GroupVersionResource{
+			Group:    "batch",
+			Version:  "v1",
+			Resource: "jobs",
+		}
+	case "CronJob":
+		gvr = schema.GroupVersionResource{
+			Group:    "batch",
+			Version:  "v1",
+			Resource: "cronjobs",
+		}
+	default:
+		// Default to core v1 resources with simple pluralization
+		gvr = schema.GroupVersionResource{
+			Group:    "",
+			Version:  "v1",
+			Resource: kindToResource(kind),
+		}
+	}
+
+	// Create GVK from GVR for cache key
 	gvk := schema.GroupVersionKind{
-		Group:   "",
-		Version: "v1",
+		Group:   gvr.Group,
+		Version: gvr.Version,
 		Kind:    kind,
 	}
 
@@ -106,24 +154,13 @@ func (c *StatusController) setupInformerForKind(kind string) {
 		return
 	}
 
-	// Create a dynamic informer for the resource kind
-	resource := kindToResource(kind)
-
 	// Create a dynamic list/watch for the resource
 	listFunc := func(options metav1.ListOptions) (runtime.Object, error) {
-		return c.dynamicClient.Resource(schema.GroupVersionResource{
-			Group:    "",
-			Version:  "v1",
-			Resource: resource,
-		}).Namespace("").List(context.Background(), options)
+		return c.dynamicClient.Resource(gvr).Namespace("").List(context.Background(), options)
 	}
 
 	watchFunc := func(options metav1.ListOptions) (watch.Interface, error) {
-		return c.dynamicClient.Resource(schema.GroupVersionResource{
-			Group:    "",
-			Version:  "v1",
-			Resource: resource,
-		}).Namespace("").Watch(context.Background(), options)
+		return c.dynamicClient.Resource(gvr).Namespace("").Watch(context.Background(), options)
 	}
 
 	informer := cache.NewSharedIndexInformer(
@@ -182,7 +219,7 @@ func (c *StatusController) Run(workers int, stopCh <-chan struct{}) error {
 }
 
 func (c *StatusController) runWorker() {
-	for c.workqueue.Len() > 0 {
+	for {
 		if !c.processNextItem() {
 			return
 		}
@@ -217,14 +254,16 @@ func (c *StatusController) processNextItem() bool {
 
 func (c *StatusController) handleObject(obj interface{}) {
 	// Ensure we have a valid object
-	_, ok := obj.(metav1.Object)
-	if !ok {
+	var metaObj metav1.Object
+	var ok bool
+
+	if metaObj, ok = obj.(metav1.Object); !ok {
 		tombstone, ok := obj.(cache.DeletedFinalStateUnknown)
 		if !ok {
 			klog.Errorf("Error decoding object, invalid type")
 			return
 		}
-		_, ok = tombstone.Obj.(metav1.Object)
+		metaObj, ok = tombstone.Obj.(metav1.Object)
 		if !ok {
 			klog.Errorf("Error decoding object tombstone, invalid type")
 			return
@@ -249,6 +288,8 @@ func (c *StatusController) handleObject(obj interface{}) {
 	conditions, found, err := unstructured.NestedSlice(unstructuredObj.Object, "status", "conditions")
 	if err != nil || !found {
 		// No conditions found, but not an error - just means this object might not have conditions
+		// We'll still process it to handle resources that have just started reporting conditions
+		klog.V(5).Infof("No conditions found for %s/%s", metaObj.GetNamespace(), metaObj.GetName())
 		c.workqueue.Add(key)
 		return
 	}
@@ -272,11 +313,18 @@ func (c *StatusController) handleObject(obj interface{}) {
 		}
 	}
 
+	// Only process if we have actual conditions
+	if len(currentStatus) == 0 {
+		klog.V(5).Infof("No valid conditions extracted for %s/%s", metaObj.GetNamespace(), metaObj.GetName())
+		return
+	}
+
 	// Check if status has changed
 	previousStatus, exists := c.resourceStatus[key]
 	if !exists || !statusEqual(previousStatus, currentStatus) {
 		changed = true
 		c.resourceStatus[key] = currentStatus
+		klog.V(4).Infof("Status changed for %s/%s: %v", metaObj.GetNamespace(), metaObj.GetName(), currentStatus)
 	}
 
 	if changed {
@@ -459,12 +507,22 @@ func (c *StatusController) createJobFromTemplate(
 		"kubevent-trigger-type":  "status",
 	}
 
+	// Get resource condition types and statuses for labels
+	for condType, condStatus := range conditions {
+		safeCondType := strings.ReplaceAll(condType, ".", "-")    // Replace dots with dashes
+		safeCondType = strings.ReplaceAll(safeCondType, " ", "-") // Replace spaces with dashes
+
+		// Add condition to labels with a prefix to avoid conflicts
+		labels[fmt.Sprintf("condition-%s", safeCondType)] = condStatus
+	}
+
 	// Create a job from the template
 	job := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
 			GenerateName: jobName + "-",
-			Namespace:    namespace,
-			Labels:       labels,
+			// Use template namespace for the job, not resource namespace
+			Namespace: template.Namespace,
+			Labels:    labels,
 			OwnerReferences: []metav1.OwnerReference{
 				{
 					APIVersion: "kubevent.roshanbhatia.com/v1alpha1",
@@ -516,8 +574,8 @@ func (c *StatusController) createJobFromTemplate(
 		}
 	}
 
-	// Create the job
-	createdJob, err := c.kubeClient.BatchV1().Jobs(namespace).Create(context.Background(), job, metav1.CreateOptions{})
+	// Create the job in the template's namespace, not the resource's namespace
+	createdJob, err := c.kubeClient.BatchV1().Jobs(template.Namespace).Create(context.Background(), job, metav1.CreateOptions{})
 	if err != nil {
 		return fmt.Errorf("failed to create job: %w", err)
 	}

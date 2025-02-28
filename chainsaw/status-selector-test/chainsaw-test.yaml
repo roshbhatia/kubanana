@@ -1,0 +1,33 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: status-selector-test
+spec:
+  description: Test that jobs are created when resources match status conditions
+  steps:
+  - name: apply-job-template
+    try:
+    - apply:
+        file: ../resources/status-selector-job-template.yaml
+  - name: create-pod-with-status
+    try:
+    - apply:
+        file: ../resources/test-pod-status.yaml
+    - sleep:
+        duration: 30s  # Wait for pod to become ready and trigger job
+  - name: verify-job-created
+    try:
+    - sleep:
+        duration: 10s  # Give controller time to create the job
+    - script:
+        content: |
+          #!/bin/bash
+          # Check for any jobs with our labels
+          JOBS=$(kubectl get jobs --all-namespaces -l kubevent-resource-kind=Pod,kubevent-trigger-type=status | grep -c .)
+          if [ "$JOBS" -ge "1" ]; then
+            echo "Found at least one job matching our criteria"
+            exit 0
+          else
+            echo "No matching jobs found"
+            exit 1
+          fi

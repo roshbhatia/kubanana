@@ -316,3 +316,83 @@ func areStatusesEqual(old, new map[string]string) bool {
 
 	return true
 }
+
+// Test enhanced name pattern matching
+func TestEnhancedNamePatternMatching(t *testing.T) {
+	testCases := []struct {
+		name         string
+		pattern      string
+		resourceName string
+		shouldMatch  bool
+	}{
+		{
+			name:         "exact match",
+			pattern:      "test-pod",
+			resourceName: "test-pod",
+			shouldMatch:  true,
+		},
+		{
+			name:         "prefix wildcard",
+			pattern:      "*-pod",
+			resourceName: "test-pod",
+			shouldMatch:  true,
+		},
+		{
+			name:         "suffix wildcard",
+			pattern:      "test-*",
+			resourceName: "test-pod",
+			shouldMatch:  true,
+		},
+		{
+			name:         "middle wildcard",
+			pattern:      "test-*-status",
+			resourceName: "test-pod-status",
+			shouldMatch:  true,
+		},
+		{
+			name:         "multiple wildcards",
+			pattern:      "test-*-*",
+			resourceName: "test-pod-status",
+			shouldMatch:  true,
+		},
+		{
+			name:         "no match",
+			pattern:      "test-pod",
+			resourceName: "different-pod",
+			shouldMatch:  false,
+		},
+		{
+			name:         "prefix wildcard no match",
+			pattern:      "*-foo",
+			resourceName: "test-pod",
+			shouldMatch:  false,
+		},
+		{
+			name:         "suffix wildcard no match",
+			pattern:      "other-*",
+			resourceName: "test-pod",
+			shouldMatch:  false,
+		},
+		{
+			name:         "empty pattern",
+			pattern:      "",
+			resourceName: "test-pod",
+			shouldMatch:  false,
+		},
+		{
+			name:         "just wildcard",
+			pattern:      "*",
+			resourceName: "anything",
+			shouldMatch:  true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			result := matchNamePattern(tc.pattern, tc.resourceName)
+			if result != tc.shouldMatch {
+				t.Errorf("matchNamePattern(%q, %q) = %v, want %v", tc.pattern, tc.resourceName, result, tc.shouldMatch)
+			}
+		})
+	}
+}

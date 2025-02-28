@@ -1,0 +1,33 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: status-selector-test
+spec:
+  steps:
+  - name: setup-kubevent
+    try:
+    - apply:
+        file: ../setup/kubevent-system-namespace.yaml
+    - apply:
+        file: ../setup/kubevent-crd.yaml
+    - sleep:
+        duration: 5s
+    - apply:
+        file: ../setup/kubevent-controller.yaml
+    - sleep:
+        duration: 10s
+  # Status Selector Test
+  - name: apply-job-template
+    try:
+    - apply:
+        file: ../resources/status-selector-job-template.yaml
+  - name: create-pod-with-status
+    try:
+    - apply:
+        file: ../resources/test-pod-status.yaml
+    - sleep:
+        duration: 30s
+  - name: verify-job-created
+    try:
+    - assert:
+        file: ../verifications/status-selector-job-created.yaml

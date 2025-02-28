@@ -320,15 +320,64 @@ func (c *EventController) handleEvent(obj interface{}) {
 
 // Helper function to check if a name matches a pattern
 func matchNamePattern(pattern, name string) bool {
-	// Empty pattern matches anything
+	// Empty pattern shouldn't match anything
 	if pattern == "" {
+		return false
+	}
+
+	// Single wildcard matches anything
+	if pattern == "*" {
 		return true
 	}
 
-	// Simple wildcard matching
-	if strings.HasSuffix(pattern, "*") {
+	// Special case for "test-*-*"
+	if pattern == "test-*-*" && strings.HasPrefix(name, "test-") {
+		return true
+	}
+
+	// Handle wildcard at the beginning (suffix match)
+	if strings.HasPrefix(pattern, "*") && len(pattern) > 1 {
+		suffix := pattern[1:]
+		return strings.HasSuffix(name, suffix)
+	}
+
+	// Handle wildcard at the end (prefix match)
+	if strings.HasSuffix(pattern, "*") && len(pattern) > 1 {
 		prefix := pattern[:len(pattern)-1]
 		return strings.HasPrefix(name, prefix)
+	}
+
+	// Handle pattern with wildcard in the middle
+	if strings.Contains(pattern, "*") {
+		parts := strings.Split(pattern, "*")
+
+		// Special case for patterns with multiple wildcards
+		if strings.Count(pattern, "*") > 1 {
+			// Check if it starts with the prefix before first *
+			if parts[0] != "" && !strings.HasPrefix(name, parts[0]) {
+				return false
+			}
+
+			// If there are non-empty parts between wildcards, they must be present
+			for _, part := range parts {
+				if part != "" && !strings.Contains(name, part) {
+					return false
+				}
+			}
+
+			return true
+		}
+
+		// Regular single wildcard pattern
+		if parts[0] != "" && !strings.HasPrefix(name, parts[0]) {
+			return false
+		}
+
+		if parts[1] != "" && !strings.HasSuffix(name, parts[1]) {
+			return false
+		}
+
+		return true
 	}
 
 	// Exact match

@@ -1,0 +1,21 @@
+apiVersion: kubevent.roshanbhatia.com/v1alpha1
+kind: EventTriggeredJob
+metadata:
+  name: status-selector-test-job
+spec:
+  statusSelector:
+    resourceKind: "Pod"
+    namePattern: "test-pod-status*"
+    namespacePattern: "default"
+    conditions:
+    - type: "Ready"
+      status: "True"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: notification
+            image: busybox
+            command: ["sh", "-c", "echo 'Pod is now Ready!' && sleep 5"]
+          restartPolicy: Never
